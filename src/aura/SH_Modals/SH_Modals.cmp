@@ -1,0 +1,86 @@
+<aura:component description="SH_Modals" controller="SH_ModalsController" access="global">
+    <c:SH_Spinner aura:id="spinner"/>
+
+    <aura:attribute name="isEditModalOpen" type="Boolean" default="{!false}"/>
+    <aura:attribute name="isDeleteModalOpen" type="Boolean" default="{!false}"/>
+    <aura:attribute name="objectListToDisplay" type="Object[]"/>
+    <aura:attribute name="objectType" type="String"/>
+    <aura:attribute name="objectID" type="String"/>
+    <aura:attribute name="secondObjectID" type="String"/>
+
+    <aura:registerEvent name="SH_SendInfoAfterAccountUpsertEvent" type="c:SH_SendInfoAfterAccountUpsertEvent"/>
+    <aura:registerEvent name="SH_SendInfoAfterAccountDeleteEvent" type="c:SH_SendInfoAfterAccountDeleteEvent"/>
+
+    <aura:method name="setEditModalVisibility" action="{!c.setEditModalVisibility}" access="public">
+        <aura:attribute name="objectID" type="String"/>
+        <aura:attribute name="objectName" type="String"/>
+        <aura:attribute name="isVisibility" type="Boolean"/>
+    </aura:method>
+    <aura:method name="setDeleteModalVisibility" action="{!c.setDeleteModalVisibility}" access="public">
+        <aura:attribute name="objectID" type="String"/>
+        <aura:attribute name="secondObjectID" type="String" description="If junction object"/>
+        <aura:attribute name="objectName" type="String"/>
+        <aura:attribute name="isVisibility" type="Boolean"/>
+    </aura:method>
+
+    <!-- ########### Edit Modal ###########-->
+    <aura:if isTrue="{!v.isEditModalOpen}">
+        <section role="dialog" tabindex="-1" aria-labelledby="edit-modal-heading" aria-modal="true" aria-describedby="edit-modal-content-id" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse">
+                        <div class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                            <lightning:icon iconName="utility:close"/>
+                        </div>
+
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+
+                    <h2 id="edit-modal-heading" class="slds-text-heading_medium slds-hyphenate">{!v.objectListToDisplay[0].value} {!v.objectListToDisplay[1].value}</h2>
+                </header>
+
+                <div class="slds-modal__content slds-p-around_medium" id="edit-modal-content-id">
+                    <aura:iteration items="{!v.objectListToDisplay}" var="object">
+                        <div class="slds-form-element">
+                                <lightning:input label="{!object.key}" value="{!object.value}" required="{!object.require}"/>
+                        </div>
+                    </aura:iteration>
+                </div>
+
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick="{!c.cancel}">{!$Label.c.Cancel_Button}</button>
+                    <button class="slds-button slds-button_brand" onclick="{!c.save}">{!$Label.c.Save_Button}</button>
+                </footer>
+            </div>
+        </section>
+
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+
+    <!-- ########### Delete Modal ###########-->
+    <aura:if isTrue="{!v.isDeleteModalOpen}">
+        <div role="alertdialog" tabindex="-1" aria-labelledby="prompt-heading-id" aria-describedby="prompt-message-wrapper" class="slds-modal slds-fade-in-open slds-modal--prompt">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header slds-theme--error slds-theme--alert-texture">
+                    <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close">
+                        <lightning:icon iconName="utility:close"/>
+
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                </div>
+
+                <div class="slds-modal__content slds-p-around--medium">
+                    <div>
+                        {!$Label.c.Confirmation_delete_Account}
+                    </div>
+                </div>
+
+                <div class="slds-modal__footer slds-theme--default">
+                    <button class="slds-button slds-button_neutral" onclick="{!c.cancel}">{!$Label.c.Cancel_Button}</button>
+                    <button class="slds-button slds-button_destructive" onclick="{!c.deleteObject}">{! if( v.secondObjectID == '', $Label.c.Delete_Link, $Label.c.Remove_button)}</button>
+                </div>
+            </div>
+        </div>
+        <div class="slds-backdrop slds-backdrop--open"></div>
+    </aura:if>
+</aura:component>

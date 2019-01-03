@@ -1,0 +1,3 @@
+<aura:event type="APPLICATION" description="SH_Branch_AccountsIDsToDisplay">
+    <aura:attribute name="accountsIDs" type="String[]"/>
+</aura:event>

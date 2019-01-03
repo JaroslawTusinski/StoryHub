@@ -1,0 +1,18 @@
+<aura:component description="SH_Branch_SearchForm" implements="flexipage:availableForAllPageTypes">
+    <aura:attribute name="inputCountryName" type="String"/>
+    <aura:attribute name="inputCityName" type="String"/>
+
+    <aura:registerEvent name="SH_Branch_SearchCredentialsEvent" type="c:SH_Branch_SearchCredentialsEvent"/>
+
+    <lightning:card title="{!$Label.c.Search_Header}">
+        <form class="slds-form--stacked slds-m-horizontal--medium">
+            <lightning:input label="{!$Label.c.Search_label_country}" value="{!v.inputCountryName}"/>
+            <lightning:input label="{!$Label.c.Search_label_city}" value="{!v.inputCityName}"/>
+
+            <div class="slds-text-align--right">
+                <lightning:button label="{!$Label.c.Clear_Button}" onclick="{!c.clearSearchParametersForSearchCredentialsEvent}"/>
+                <lightning:button label="{!$Label.c.Search_Button}" variant="brand" onclick="{!c.setSearchParametersForSearchCredentialsEvent}"/>
+            </div>
+        </form>
+    </lightning:card>
+</aura:component>

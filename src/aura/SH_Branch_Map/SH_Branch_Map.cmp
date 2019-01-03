@@ -1,0 +1,15 @@
+<aura:component description="SH_Branch_Map" implements="flexipage:availableForAllPageTypes" controller="SH_Branch_MapController">
+    <ltng:require styles="{!$Resource.SH_StyleCSS}"/>
+
+    <aura:attribute name="map" type="Object"/>
+    <aura:attribute name="currentMarkers" type="Object[]"/>
+
+    <ltng:require styles="/resource/leaflet/leaflet.css" scripts="/resource/leaflet/leaflet.js" afterScriptsLoaded="{!c.jsLoaded}" />
+
+    <aura:handler event="c:SH_Branch_AccountsIDsToDisplay" action="{!c.handleSendSelectedBranchIDEvent}"/>
+    <aura:handler event="c:SH_SendInfoAfterAccountUpsertEvent" action="{!c.handleSendInfoAfterAccountUpsertEvent}"/>
+
+    <lightning:card title="{!$Label.c.Map_Header}">
+        <div id="map" class="slds-m-horizontal--medium"></div>
+    </lightning:card>
+</aura:component>

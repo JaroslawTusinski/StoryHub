@@ -1,0 +1,96 @@
+<aura:component description="SH_Branch_Results" implements="flexipage:availableForAllPageTypes" controller="SH_Branch_ResultsController">
+    <ltng:require styles="{!$Resource.SH_StyleCSS}"/>
+
+    <c:SH_Spinner aura:id="spinner"/>
+
+    <aura:attribute name="cross" type="String" default="✖"/>
+
+    <aura:attribute name="searchCredentials" type="Object[]"/>
+    <aura:attribute name="searchResults" type="String[]"/>
+    <aura:attribute name="searchCredentialsObject" type="Object"/>
+    <aura:attribute name="isResultBodyNotEmpty" type="Boolean"/>
+
+    <aura:handler event="c:SH_Branch_SearchCredentialsEvent" action="{!c.handleSearchCredentialsEvent}"/>
+    <aura:handler event="c:SH_SendInfoAfterAccountUpsertEvent" action="{!c.handleSendInfoAfterAccountUpsertEvent}"/>
+    <aura:handler event="c:SH_SendInfoAfterAccountDeleteEvent" action="{!c.handleSendInfoAfterAccountDeleteEvent}"/>
+
+    <aura:registerEvent name="SH_Branch_AccountsIDsToDisplay" type="c:SH_Branch_AccountsIDsToDisplay"/>
+
+    <lightning:card title="{!$Label.c.Results_Header}">
+        <div class="slds-m-horizontal--medium">
+            <aura:iteration items="{!v.searchCredentials}" var="credential">
+                <span class="slds-pill slds-pill_link">
+                    <a class="slds-pill__action">
+                        <span class="slds-pill__label">{!credential.value}</span>
+                    </a>
+
+                    <button class="slds-button slds-button_icon slds-button_icon slds-pill__remove" onclick="{!c.removeCredential}" data-key="{!credential.key}" title="{!$Label.c.Remove_description}">
+                            {!v.cross}
+                    </button>
+                </span>
+            </aura:iteration>
+
+            <aura:if isTrue="{!v.isResultBodyNotEmpty}">
+                <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-m-top--medium" role="grid">
+                    <thead>
+                    <tr class="slds-text-title--caps">
+                        <th scope="col">
+                            <div class="slds-truncate">{!$Label.c.Table_column_actions}</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate">{!$Label.c.Table_column_name}</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate">{!$Label.c.Table_column_country}</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate">{!$Label.c.Search_label_city}</div>
+                        </th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <aura:iteration items="{!v.searchResults}" var="res">
+                        <tr id="{!res.Id}" class="">
+                            <td>
+                                <div class="slds-truncate">
+                                    <a onclick="{!c.selectBranch}" data-id="{!res.Id}">
+                                        {!$Label.c.Show_details}
+                                    </a>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="slds-truncate">{!res.Name}</div>
+                            </td>
+                            <td>
+                                <div class="slds-truncate">
+                                    {!res.ShippingCountry}
+
+                                    <aura:if isTrue="{!res.ShippingCountry == undefined}">
+                                            {!res.BillingCountry}
+                                    </aura:if>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="slds-truncate">
+                                    {!res.BillingCity}
+
+                                    <aura:if isTrue="{!res.BillingCity == undefined}">
+                                            {!res.ShippingCity}
+                                    </aura:if>
+                                </div>
+                            </td>
+                        </tr>
+                    </aura:iteration>
+                    </tbody>
+                </table>
+            </aura:if>
+
+            <aura:if isTrue="{! !v.isResultBodyNotEmpty}">
+                <div class="slds-illustration slds-illustration_large" aria-hidden="true">
+                    <img src="{!$Resource.SH_BinocularsImage}" alt=""/>
+                </div>
+            </aura:if>
+        </div>
+    </lightning:card>
+</aura:component>

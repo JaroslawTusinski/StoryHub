@@ -1,0 +1,29 @@
+.THIS .display-none {
+    display: none;
+}
+
+.THIS .slds-m-horizontal--medium {
+    position: relative;
+}
+
+.THIS .slds-button-group {
+    position: absolute;
+    top: -2.15rem;
+    right: 0;
+}
+
+.THIS dl {
+    position: relative;
+}
+
+.THIS dl .slds-button-group {
+    top: 0;
+}
+
+.THIS .slds-tile+.slds-tile {
+    margin-top: 1rem;
+}
+
+.THIS .slds-tabs_default__content.slds-show {
+    padding-bottom: 0rem;
+}

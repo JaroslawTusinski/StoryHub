@@ -1,0 +1,110 @@
+<aura:component description="SH_Branch_Details" implements="flexipage:availableForAllPageTypes" controller="SH_Branch_DetailsController">
+    <c:SH_Spinner aura:id="spinner"/>
+    <c:SH_Modals aura:id="modals"/>
+
+    <aura:handler event="c:SH_Branch_AccountsIDsToDisplay" action="{!c.handleSendSelectedBranchIDEvent}"/>
+    <aura:handler event="c:SH_SendInfoAfterAccountUpsertEvent" action="{!c.handleSendInfoAfterAccountUpsertEvent}"/>
+
+    <aura:attribute name="isResultBodyNotEmpty" type="Boolean" default="{!false}"/>
+    <aura:attribute name="accountDetails" type="Object[]"/>
+    <aura:attribute name="employees" type="Object[]"/>
+    <aura:attribute name="accountID" type="String"/>
+    <aura:attribute name="employeeID" type="String"/>
+    <aura:attribute name="employeesNumber" type="String"/>
+
+    <lightning:card title="{!$Label.c.Details_Header}">
+        <div class="slds-m-horizontal--medium">
+            <aura:if isTrue="{! !v.isResultBodyNotEmpty}">
+                <div class="slds-illustration slds-illustration_large" aria-hidden="true">
+                    <img src="{!$Resource.SH_ChestImage}" alt=""/>
+                </div>
+            </aura:if>
+
+            <aura:if isTrue="{!v.isResultBodyNotEmpty}">
+                <article class="slds-tile slds-media">
+                    <lightning:tabset>
+                        <lightning:tab label="{!v.accountDetails[0].value}">
+                            <div class="slds-form slds-form_horizontal" role="list">
+                                <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-m-top--medium" role="grid">
+                                    <tbody>
+                                        <aura:iteration items="{!v.accountDetails}" var="account">
+                                            <tr>
+                                                <td>
+                                                    <div class="slds-truncate">
+                                                        {!account.key}
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="slds-truncate">
+                                                        {!account.value}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </aura:iteration>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <lightning:buttonGroup>
+                                <lightning:button label="{!$Label.c.Edit_Link}" onclick="{!c.editAccount}"/>
+                                <lightning:button label="{!$Label.c.Delete_Link}" type="submit" variant="destructive" onclick="{!c.deleteAccount}"/>
+                            </lightning:buttonGroup>
+                        </lightning:tab>
+
+                        <lightning:tab label="{!$Label.c.Employees_tab_name}">
+                            <article class="slds-card slds-card--narrow">
+                                <div class="slds-grid" style="margin-bottom: 1rem">
+                                    <header class="slds-media slds-media--center slds-has-flexi-truncate">
+                                        <div class="slds-media__figure">
+                                            <div aria-hidden="true" class="slds-icon slds-icon-standard-contact">
+                                                <lightning:icon iconName="utility:user"/>
+                                            </div>
+                                        </div>
+                                        <div class="slds-media__body slds-truncate">
+                                            <h2>
+                                                <a href="javascript:void(0);" class="slds-text-link--reset">
+                                                    <span class="slds-text-heading--small">{!$Label.c.Employees_tab_name} {!v.employeesNumber}</span>
+                                                </a>
+                                            </h2>
+                                        </div>
+                                    </header>
+                                </div>
+                                <div>
+                                    <aura:iteration items="{!v.employees}" var="employee">
+                                        <div class="slds-tile">
+                                            <div class="slds-tile__detail slds-text-body--small">
+                                                <dl class="slds-dl--horizontal">
+                                                    <aura:iteration items="{!employee}" var="e">
+                                                        <aura:if isTrue="{!e.key != 'Id'}">
+                                                            <dt class="slds-dl--horizontal__label">
+                                                                <span class="slds-truncate">{!e.key}</span>
+                                                            </dt>
+                                                            <dd class="slds-dl--horizontal__detail slds-tile__meta">
+                                                                <span class="slds-truncate">{!e.value}</span>
+                                                            </dd>
+                                                        </aura:if>
+                                                        <aura:if isTrue="{!e.key == 'Id'}">
+                                                            <lightning:buttonGroup>
+                                                                <button onclick="{!c.editEmployee}" data-value="{!e.value}" class="slds-button slds-button_neutral">{!$Label.c.Edit_Link}</button>
+                                                                <button onclick="{!c.removeEmployee}" data-value="{!e.value}" class="slds-button slds-button_destructive">{!$Label.c.Remove_button}</button>
+                                                            </lightning:buttonGroup>
+                                                        </aura:if>
+                                                    </aura:iteration>
+                                                </dl>
+                                            </div>
+                                        </div>
+                                    </aura:iteration>
+                                </div>
+                                <!--<div class="slds-card__footer"><a href="javascript:void(0);">View All <span class="slds-assistive-text">entity type</span></a></div>-->
+                            </article>
+
+                            <lightning:buttonGroup>
+                                <lightning:button label="{!$Label.c.Button_add}" onclick="{!c.addEmployee}"/>
+                            </lightning:buttonGroup>
+                        </lightning:tab>
+                    </lightning:tabset>
+                </article>
+            </aura:if>
+        </div>
+    </lightning:card>
+</aura:component>
