@@ -1,4 +1,4 @@
-({
+({  // TODO - this component needs refactoring
     setEditModalVisibility : function(component, event, helper) {
         helper.doEditModalVisibility(component, event);
     },

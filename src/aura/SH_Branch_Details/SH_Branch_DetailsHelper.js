@@ -122,7 +122,7 @@
         const employeeID = (event.currentTarget).dataset.value;
         const accountID = component.get('v.accountID');
 
-        modal.setEditModalVisibility(employeeID, 'Employee__c', true);
+        modal.setEditModalVisibility(employeeID, 'User', true);
         this.findDetailsToDisplay(component, accountID, false);
     },
 
@@ -130,7 +130,7 @@
         const modal = component.find('modals');
         const employeeID = (event.currentTarget).dataset.value;
 
-        modal.setDeleteModalVisibility(employeeID, component.get('v.accountID'), 'Employee__c', true);
+        modal.setDeleteModalVisibility(employeeID, component.get('v.accountID'), 'User', true);
         this.findDetailsToDisplay(component, accountID, false);
     },
 

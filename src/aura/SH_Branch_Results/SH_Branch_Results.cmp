@@ -8,6 +8,7 @@
     <aura:attribute name="searchCredentials" type="Object[]"/>
     <aura:attribute name="searchResults" type="String[]"/>
     <aura:attribute name="searchCredentialsObject" type="Object"/>
+    <aura:attribute name="selectID" type="String"/>
     <aura:attribute name="isResultBodyNotEmpty" type="Boolean"/>
 
     <aura:handler event="c:SH_Branch_SearchCredentialsEvent" action="{!c.handleSearchCredentialsEvent}"/>
@@ -24,7 +25,7 @@
                         <span class="slds-pill__label">{!credential.value}</span>
                     </a>
 
-                    <button class="slds-button slds-button_icon slds-button_icon slds-pill__remove" onclick="{!c.removeCredential}" data-key="{!credential.key}" title="{!$Label.c.Remove_description}">
+                    <button class="slds-button slds-button_icon slds-button_icon slds-pill__remove" onclick="{!c.removeCredential}" data-key="{!credential.key}" title="{!$Label.c.Remove_Tooltip}">
                             {!v.cross}
                     </button>
                 </span>
@@ -44,7 +45,7 @@
                             <div class="slds-truncate">{!$Label.c.Table_column_country}</div>
                         </th>
                         <th scope="col">
-                            <div class="slds-truncate">{!$Label.c.Search_label_city}</div>
+                            <div class="slds-truncate">{!$Label.c.Table_column_city}</div>
                         </th>
                     </tr>
                     </thead>

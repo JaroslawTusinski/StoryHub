@@ -1,44 +1,33 @@
 public with sharing class SH_ModalsController {
     @AuraEnabled(cacheable=true)
     public static String searchObjectByID(String objectID, String objectName) {
+        List<String> listOfFields;
+
         switch on objectName {
             when 'Account' {
-                return searchAccountDetailsByID(SH_Utils.accountFieldList, objectID);
+                listOfFields = SH_Utils.accountFieldList;
             }
-            when 'Employee__c' {
-                return searchEmployeeDetailsByID(SH_Utils.employeeFieldList, objectID);
+            when 'User' {
+                listOfFields = SH_Utils.employeeFieldList;
             }
         }
 
-        return null;
+        return searchObjectDetailsByID(listOfFields, objectID, objectName);
     }
 
-    private static String searchAccountDetailsByID(List<String> fieldList, String accountID) {
+    private static String searchObjectDetailsByID(List<String> fieldList, String objectID, String objectName) {
         SH_Utils.QueryBuilder queryBuilder = new SH_Utils.QueryBuilder();
 
-        for(String field : fieldList) {
-            queryBuilder.addSelect(field);
-        }
-        queryBuilder.addFrom('Account');
-        queryBuilder.addWhere('Id = \'' + accountID + '\'');
+        queryBuilder.addSelect(fieldList);
+        queryBuilder.addFrom(objectName);
+        queryBuilder.addWhere('Id = \'' + objectID + '\'');
 
-        return objectListCreator(fieldList, Database.query(queryBuilder.getQuery()).get(0));
+        return objectListCreator(fieldList, Database.query(queryBuilder.getQuery()).get(0), objectName);
     }
 
-    private static String searchEmployeeDetailsByID(List<String> fieldList, String userID) {
-        SH_Utils.QueryBuilder queryBuilder = new SH_Utils.QueryBuilder();
-
-        for(String field : fieldList) {
-            queryBuilder.addSelect(field);
-        }
-        queryBuilder.addFrom('User');
-        queryBuilder.addWhere('Id = \'' + userID + '\'');
-
-        return objectListCreator(fieldList, Database.query(queryBuilder.getQuery()).get(0));
-    }
-
-    private static String objectListCreator(List<String> fieldList, SObject obj) {
+    private static String objectListCreator(List<String> fieldList, SObject obj, String objectName) {
         List<SH_Utils.ModalObjectTemplate> listOfObjects = new List<SH_Utils.ModalObjectTemplate>();
+        Map<String, String> mapOfLabels = SH_Utils.getObjectLabelMap(objectName);
 
         for (String key : fieldList) {
             Boolean require = false;
@@ -51,7 +40,7 @@ public with sharing class SH_ModalsController {
                 value = '';
             }
 
-            listOfObjects.add(new SH_Utils.ModalObjectTemplate(value, key, require));
+            listOfObjects.add(new SH_Utils.ModalObjectTemplate(value, mapOfLabels.get(key.toLowerCase()), key, require));
         }
 
         return JSON.serialize(listOfObjects);
@@ -59,45 +48,21 @@ public with sharing class SH_ModalsController {
 
     @AuraEnabled
     public static Boolean saveObject(String objectJSON, String objectName, String objectID) {
-        switch on objectName {
-            when 'Account' {
-                return upsertAccount((List<SH_Utils.ModalObjectTemplate>) System.JSON.deserialize(objectJSON, List<SH_Utils.ModalObjectTemplate>.class), objectID);
-            }
-            when 'Employee__c' {
-                return upsertEmployee((List<SH_Utils.ModalObjectTemplate>) System.JSON.deserialize(objectJSON, List<SH_Utils.ModalObjectTemplate>.class), objectID);
-            }
-        }
+        List<SH_Utils.ModalObjectTemplate> modObjTem = (List<SH_Utils.ModalObjectTemplate>) System.JSON.deserialize(objectJSON, List<SH_Utils.ModalObjectTemplate>.class);
 
-        return false;
+        return updateObject(modObjTem, objectID, objectName);
     }
 
-    private static Boolean upsertAccount(List<SH_Utils.ModalObjectTemplate> accountObjects, String accountID) {
-        Account a = new Account();
+    private static Boolean updateObject(List<SH_Utils.ModalObjectTemplate> modObjTem, String objectID, String objectName) {
+        sObject obj = Schema.getGlobalDescribe().get(objectName).newSObject();
 
-        a.put('Id', accountID);
-        for (SH_Utils.ModalObjectTemplate accountField : accountObjects) {
-            a.put(accountField.key, accountField.value);
+        obj.put('Id', objectID);
+        for (SH_Utils.ModalObjectTemplate field : modObjTem) {
+            obj.put(field.key, field.value);
         }
 
         try {
-            upsert a;
-            return true;
-        }
-        catch (Exception e) {
-            throw e;
-        }
-    }
-
-    private static Boolean upsertEmployee(List<SH_Utils.ModalObjectTemplate> employeeObjects, String employeeID) {
-        User employee = new User();
-
-        employee.put('Id', employeeID);
-        for (SH_Utils.ModalObjectTemplate employeeField : employeeObjects) {
-            employee.put(employeeField.key, employeeField.value);
-        }
-
-        try {
-            update employee;
+            update obj;
             return true;
         }
         catch (Exception e) {
@@ -107,23 +72,20 @@ public with sharing class SH_ModalsController {
 
     @AuraEnabled
     public static Boolean deleteObjectByID(String objectName, String objectID, String secondObjectID) {
-        switch on objectName {
-            when 'Account' {
-                return deleteAccount(objectID);
-            }
-            when 'Employee__c' {
-                return deleteEmployee(objectID, secondObjectID);
-            }
+        if (String.isNotBlank(objectID) && String.isNotBlank(secondObjectID)) {
+            return deleteJunctionObject(objectID, secondObjectID, objectName);
         }
-
-        return false;
+        else {
+            return deleteObject(objectID, objectName);
+        }
     }
 
-    private static Boolean deleteAccount(String accountID) {
-        Account a = new Account(Id = accountID);
+    private static Boolean deleteObject(String objectID, String objectName) {
+        sObject obj = Schema.getGlobalDescribe().get(objectName).newSObject();
+        obj.put('Id', objectID);
 
         try {
-            delete a;
+            delete obj;
             return true;
         }
         catch (Exception e) {
@@ -131,20 +93,29 @@ public with sharing class SH_ModalsController {
         }
     }
 
-    private static Boolean deleteEmployee(String objectID, String secondObjectID) {
-        Employee__c employee;
+    private static Boolean deleteJunctionObject(String objectID, String secondObjectID, String objectName) { // TODO - needs refactoring
+        sObject obj;
+        String firstObj;
+        String secondObj;
+
+        switch on objectName {
+            when 'Employee__c' {
+                firstObj = 'Account__c';
+                secondObj = 'User__c';
+            }
+        }
 
         try {
-            employee = [SELECT Id FROM Employee__c WHERE Account__c = :objectID AND User__c = :secondObjectID];
+            obj = Database.query('SELECT Id FROM ' + objectName + ' WHERE ' + firstObj + ' = ' + objectID + ' AND ' + secondObj + ' = ' + secondObjectID);
 
-            delete employee;
+            delete obj;
             return true;
         }
         catch (Exception ex) {
             try {
-                employee = [SELECT Id FROM Employee__c WHERE Account__c = :secondObjectID AND User__c = :objectID];
+                obj = Database.query('SELECT Id FROM ' + objectName + ' WHERE ' + secondObj + ' = ' + objectID + ' AND ' + firstObj + ' = ' + secondObjectID);
 
-                delete employee;
+                delete obj;
                 return true;
             }
             catch (Exception e) {

@@ -42,7 +42,7 @@
                 <div class="slds-modal__content slds-p-around_medium" id="edit-modal-content-id">
                     <aura:iteration items="{!v.objectListToDisplay}" var="object">
                         <div class="slds-form-element">
-                                <lightning:input label="{!object.key}" value="{!object.value}" required="{!object.require}"/>
+                                <lightning:input label="{!object.label}" value="{!object.value}" required="{!object.require}"/>
                         </div>
                     </aura:iteration>
                 </div>

@@ -18,77 +18,118 @@ public with sharing class SH_Utils {
             'Title'
     };
 
+    public static Map<String, String> getObjectLabelMap(String type) {
+        Map<String, String> mapFieldsApiNameLabel = new Map<string, string>();
+        Map<String, Schema.SObjectType> schemaMap = Schema.getGlobalDescribe();
+        Schema.SObjectType leadSchema = schemaMap.get(type);
+        Map<String, Schema.SObjectField> fieldMap = leadSchema.getDescribe().fields.getMap();
+
+        for (String fieldName : fieldMap.keySet()) {
+            fieldMap.get(fieldName).getDescribe().getLabel();
+            mapFieldsApiNameLabel.put(fieldName, fieldMap.get(fieldName).getDescribe().getLabel());
+        }
+
+        return mapFieldsApiNameLabel;
+    }
+
     public class QueryBuilder {
         private List<String> qSelect;
-        private List<String> qFrom;
-        private List<String> qWhere;
         private List<String> qSort;
+        private String qFrom;
+        private String qWhere;
 
         public QueryBuilder() {
             qSelect = new List<String>();
-            qFrom = new List<String>();
-            qWhere = new List<String>();
             qSort = new List<String>();
+            qFrom = '';
+            qWhere = '';
         }
 
         public void addSelect(String field){
             qSelect.add(field);
         }
-        public void addSelect(String field, String fieldFrom){
-            qSelect.add(field);
+        public void addSelect(List<String> fields){
+            qSelect.addAll(fields);
         }
 
         public void addFrom(String fromObject){
-            qFrom.add(fromObject);
+            qFrom = fromObject;
         }
-        public void addFrom(String fromObject, String alias){
-            qFrom.add(fromObject + ' ' + alias);
+
+        public void addAND(){
+            addWhere('AND ');
+        }
+        public void startANDBlock(){
+            addWhere('AND ( ');
+        }
+
+        public void addOR(){
+            addWhere('OR ');
+        }
+        public void startORBlock(){
+            addWhere('OR ( ');
+        }
+
+        public void startINBlock(){
+            addWhere('IN ( ');
+        }
+
+        public void closeBlock(){
+            addWhere(') ');
         }
 
         public void addWhere(String whereField){
-            qWhere.add(whereField);
+            qWhere += (whereField + ' ');
         }
-        public void addWhere(String whereField, String logicOperatorToPreviousField, String logicOperatorToNextField){
-            String field = whereField;
-
-            if (String.isNotBlank(logicOperatorToPreviousField)) {
-                field = logicOperatorToPreviousField + ' ' + field;
+        public void addWhereAND(List<String> whereFields){
+            for (String field : whereFields) {
+                addAND();
+                addWhere(field);
             }
-            if (String.isNotBlank(logicOperatorToNextField)) {
-                field += (' ' + logicOperatorToNextField);
+        }
+        public void addWhereOR(List<String> whereFields){
+            for (String field : whereFields) {
+                addOR();
+                addWhere(field);
             }
-
-            qWhere.add(field);
         }
 
         public void addSort(String field){
             qSort.add(field);
         }
+        public void addSort(List<String> fields){
+            qSort.addAll(fields);
+        }
         public void addSort(String field, String sortOrder){
             qSort.add(field + ' ' + sortOrder);
+        }
+        public void addSort(List<String> fields, List<String> sortOrders){
+            for (Integer i = 0; i < fields.size(); i++) {
+                addSort(fields[i], sortOrders[i]);
+            }
         }
 
         public String getQuery() {
             String query;
 
-            query = 'SELECT' + constructQuery(qSelect, true);
-            query += ' FROM' + constructQuery(qFrom, true);
-            if (!qWhere.isEmpty()) {
-                query += ' WHERE' + constructQuery(qWhere, false);
+            query = 'SELECT' + constructQuery(qSelect);
+            query += ' FROM ' + qFrom;
+            if (String.isNotBlank(qWhere)) {
+                query += ' WHERE ' + qWhere;
             }
             if (!qSort.isEmpty()) {
-                query += ' ORDER BY' + constructQuery(qSort, true);
+                query += 'ORDER BY ' + constructQuery(qSort);
             }
 
             return query;
         }
 
-        private String constructQuery(List<String> fields, Boolean isWhere) {
+        private String constructQuery(List<String> fields) {
             Boolean isNotFirstElement = false;
             String query = '';
 
             for (String field : fields) {
-                if (isNotFirstElement && isWhere) {
+                if (isNotFirstElement) {
                     query += ',';
                 }
 
@@ -102,17 +143,20 @@ public with sharing class SH_Utils {
 
     public class ModalObjectTemplate {
         public String value;
+        public String label;
         public String key;
         public Boolean require;
 
         public ModalObjectTemplate() {
             value = '';
+            label = '';
             key = '';
             require = false;
         }
 
-        public ModalObjectTemplate(String value, String key, Boolean require) {
+        public ModalObjectTemplate(String value, String label, String key, Boolean require) {
             this.value = value;
+            this.label = label;
             this.key = key;
             this.require = require;
         }

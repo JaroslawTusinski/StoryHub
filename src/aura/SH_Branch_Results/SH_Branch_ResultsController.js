@@ -4,15 +4,15 @@
     },
 
     handleSendInfoAfterAccountUpsertEvent : function(component, event, helper) {
-        helper.researchAccounts(component, event);
+        helper.researchAccounts(component, event, false);
     },
 
     handleSendInfoAfterAccountDeleteEvent : function(component, event, helper) {
-        helper.researchAccountsAndRunAgainOtherComponents(component, event);
+        helper.researchAccounts(component, event, true);
     },
 
     removeCredential : function(component, event, helper) {
-        helper.removeCredentialAndSearchNewResults(component, event);
+        helper.searchNewResults(component, event);
     },
 
     selectBranch : function(component, event, helper) {

@@ -1,28 +1,23 @@
 public with sharing class SH_Branch_ResultsController {
-    @AuraEnabled(cacheable=true)
-    public static List<Account> searchAccountByCredentialsObject(String credentialsObjectJSON) {
-        return searchAccountByCredentialsObjectWithoutStorable(credentialsObjectJSON);
-    }
-
     @AuraEnabled
-    public static List<Account> searchAccountByCredentialsObjectWithoutStorable(String credentialsObjectJSON) {
+    public static List<Account> searchAccountByCredentialsObject(String credentialsObjectJSON) {
         CredentialsObject credentials = (CredentialsObject) System.JSON.deserialize(credentialsObjectJSON, CredentialsObject.class);
         SH_Utils.QueryBuilder queryBuilder = new SH_Utils.QueryBuilder();
+        List<String> fieldList = new List<String>{'Id', 'Name', 'Type', 'Phone', 'BillingCountry', 'BillingCity', 'ShippingCountry', 'ShippingCity'};
 
-        queryBuilder.addSelect('Id');
-        queryBuilder.addSelect('Name');
-        queryBuilder.addSelect('Type');
-        queryBuilder.addSelect('Phone');
-        queryBuilder.addSelect('BillingCountry');
-        queryBuilder.addSelect('BillingCity');
-        queryBuilder.addSelect('ShippingCountry');
-        queryBuilder.addSelect('ShippingCity');
+        queryBuilder.addSelect(fieldList);
         queryBuilder.addFrom('Account');
-        queryBuilder.addWhere('RecordType.DeveloperName = \'Shop\'', '', 'AND');
-        queryBuilder.addWhere('(BillingCountry LIKE \'' + credentials.country + '%\'', '', 'OR');
-        queryBuilder.addWhere('ShippingCountry LIKE \'' + credentials.country + '%\')', '', 'AND');
-        queryBuilder.addWhere('(BillingCity LIKE \'' + credentials.city + '%\'', '', 'OR');
-        queryBuilder.addWhere('ShippingCity LIKE \'' + credentials.city + '%\')');
+        queryBuilder.addWhere('RecordType.DeveloperName = \'Shop\'');
+        queryBuilder.startANDBlock();
+        queryBuilder.addWhere('BillingCountry LIKE \'' + credentials.country + '%\'');
+        queryBuilder.addOR();
+        queryBuilder.addWhere('ShippingCountry LIKE \'' + credentials.country + '%\'');
+        queryBuilder.closeBlock();
+        queryBuilder.startANDBlock();
+        queryBuilder.addWhere('BillingCity LIKE \'' + credentials.city + '%\'');
+        queryBuilder.addOR();
+        queryBuilder.addWhere('ShippingCity LIKE \'' + credentials.city + '%\'');
+        queryBuilder.closeBlock();
         queryBuilder.addSort('Name');
         queryBuilder.addSort('ShippingCountry');
         queryBuilder.addSort('BillingCountry');

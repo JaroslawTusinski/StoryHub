@@ -1,23 +1,26 @@
 ({
     doSetSearchParametersForSearchCredentialsEvent : function(component, event) {
-        let SearchCredentials = {
-            country : component.get('v.inputCountryName') || '',
-            city : component.get('v.inputCityName') || ''
-        };
+        let searchCredentials = this.setCredentialObjectParameters(component.get('v.inputCountryName') || '', component.get('v.inputCityName') || '');
 
-        this.fireAppEvent(SearchCredentials, true);
+        this.fireAppEvent(searchCredentials, true);
     },
 
     doClearSearchParametersForSearchCredentialsEvent : function(component, event) {
-        let SearchCredentials = {
-            country : '',
-            city : ''
-        };
+        let searchCredentials = this.setCredentialObjectParameters('', '');
 
         component.set('v.inputCityName', undefined);
         component.set('v.inputCountryName', undefined);
 
-        this.fireAppEvent(SearchCredentials, false);
+        this.fireAppEvent(searchCredentials, false);
+    },
+
+    setCredentialObjectParameters : function (country, city) {
+        let searchCredentials = {
+            country : country,
+            city : city
+        };
+
+        return searchCredentials;
     },
 
     fireAppEvent : function(credentialsObject, isSearchAction) {

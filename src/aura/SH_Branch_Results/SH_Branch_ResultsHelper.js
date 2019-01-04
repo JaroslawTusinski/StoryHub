@@ -1,12 +1,10 @@
 ({
-    removeCredentialAndSearchNewResults : function(component, event) {
-        let searchCredentials = component.get('v.searchCredentials');
-        let searchCredentialsObject = component.get('v.searchCredentialsObject');
+    removeCredential : function(component, event) {
         const credentialKey = (event.currentTarget).dataset.key;
-        searchCredentialsObject[credentialKey] = '';
+        let searchCredentialsObject = component.get('v.searchCredentialsObject');
+        let searchCredentials = component.get('v.searchCredentials');
         let i = 0;
-
-        this.switchSpinner(component, true);
+        searchCredentialsObject[credentialKey] = '';
 
         while(searchCredentials[i].key != credentialKey) {
             i++;
@@ -14,8 +12,16 @@
 
         searchCredentials.splice(i, 1);
         component.set('v.searchCredentials', searchCredentials);
-        component.set('v.searchCredentialsObject', searchCredentialsObject);
-        this.searchAccountByCredentials(component, searchCredentialsObject, true);
+        return searchCredentialsObject;
+    },
+
+    searchNewResults : function(component, event) {
+        this.switchSpinner(component, true);
+
+        let newCredentialsObject = this.removeCredential(component, event);
+
+        component.set('v.searchCredentialsObject', newCredentialsObject);
+        this.searchAccountByCredentials(component, newCredentialsObject);
     },
 
     setSearchResults : function(component, event) {
@@ -33,20 +39,14 @@
             component.set('v.isResultBodyNotEmpty', false);
             component.set('v.searchCredentials', undefined);
             this.switchSpinner(component, false);
-            this.prepareAccountsIDsToDisplayEvent(component, undefined);
+            this.prepareAccountsIDsToDisplayEvent(component, undefined, true);
         }
     },
 
-    researchAccounts : function(component, event) {
+    researchAccounts : function(component, event, resetMapMarks) {
         let searchCredentialsObject = component.get('v.searchCredentialsObject');
 
-        this.searchAccountByCredentials(component, searchCredentialsObject, false);
-    },
-
-    researchAccountsAndRunAgainOtherComponents : function(component, event) {
-        let searchCredentialsObject = component.get('v.searchCredentialsObject');
-
-        this.searchAccountByCredentials(component, searchCredentialsObject, true);
+        this.searchAccountByCredentials(component, searchCredentialsObject, resetMapMarks);
     },
 
     setFilters : function(component, searchCredentialsObject) {
@@ -67,32 +67,25 @@
         component.set('v.searchCredentials', searchCredentials);
     },
 
-    searchAccountByCredentials : function(component, searchCredentialsObject, withStorable) {
+    searchAccountByCredentials : function(component, searchCredentialsObject, resetMapMarks) {
         let searchAccountByCredentialsObject = component.get('c.searchAccountByCredentialsObject');
-         if (!withStorable) {
-            searchAccountByCredentialsObject = component.get('c.searchAccountByCredentialsObjectWithoutStorable');
-        }
 
         searchAccountByCredentialsObject.setParams({
             credentialsObjectJSON : JSON.stringify(searchCredentialsObject)
         });
 
         searchAccountByCredentialsObject.setCallback(this, function(response) {
-            this.accountSearchCallback(component, response, withStorable);
+            this.accountSearchCallback(component, response, resetMapMarks);
         });
-
-        if (withStorable) {
-            searchAccountByCredentialsObject.setStorable();
-        }
 
         $A.enqueueAction(searchAccountByCredentialsObject);
     },
 
-    accountSearchCallback : function(component, response, sendEvent) {
+    accountSearchCallback : function(component, response, resetMapMarks) {
         let state = response.getState();
 
         if (state === 'SUCCESS') {
-            this.prepareResultsToDisplay(component, response.getReturnValue(), sendEvent);
+            this.prepareResultsToDisplay(component, response.getReturnValue(), resetMapMarks);
         }
         else {
             let errors = response.getError();
@@ -103,13 +96,15 @@
         this.switchSpinner(component, false);
     },
 
-    prepareResultsToDisplay : function(component, searchResults, sendEvent) {
+    prepareResultsToDisplay : function(component, searchResults, resetMapMarks) {
         component.set('v.searchResults', searchResults);
         component.set('v.isResultBodyNotEmpty', (searchResults.length > 0));
-        this.prepareAccountsIDsToDisplayEvent(component, searchResults, sendEvent);
+        this.prepareAccountsIDsToDisplayEvent(component, searchResults, resetMapMarks);
     },
 
     handleErrors : function(errors) {
+        // TODO - needs to be put in utils class
+
         let errorMessage = 'Unknown error';
 
         if (errors && Array.isArray(errors) && errors.length > 0) {
@@ -132,13 +127,14 @@
     doSelectBranch : function(component, event) {
         let selectedBranchId = (event.currentTarget).dataset.id;
         let listOfBranches = component.get('v.searchResults');
+        const rowSelected = 'row-selected';
 
         listOfBranches.forEach(function(branch) {
             if (branch.Id != selectedBranchId) {
-                document.getElementById(branch.Id).classList.remove('row-selected');
+                document.getElementById(branch.Id).classList.remove(rowSelected);
             }
             else {
-                document.getElementById(selectedBranchId).classList.add('row-selected');
+                document.getElementById(selectedBranchId).classList.add(rowSelected);
             }
         });
 
@@ -151,22 +147,26 @@
         spinnerComponent.switchSpinner(status);
     },
 
-    prepareAccountsIDsToDisplayEvent : function(component, searchResults, sendEvent) {
-        if (sendEvent) {
-            let appAccountsIDsToDisplayEvent = $A.get('e.c:SH_Branch_AccountsIDsToDisplay');
-            let listOfIDs = [];
+    prepareAccountsIDsToDisplayEvent : function(component, searchResults, resetMapMarks) {
+        let appAccountsIDsToDisplayEvent = $A.get('e.c:SH_Branch_AccountsIDsToDisplay');
+        let listOfIDs = [];
 
+        if (resetMapMarks) {
             if (typeof(searchResults) === 'string') {
                 listOfIDs.push(searchResults);
+                component.set('v.selectID', searchResults);
             }
             else if (searchResults != undefined) {
                 searchResults.forEach(function(account) {
                     listOfIDs.push(account.Id);
                 });
             }
-
-            appAccountsIDsToDisplayEvent.setParam('accountsIDs', listOfIDs);
-            appAccountsIDsToDisplayEvent.fire();
         }
+        else {
+            listOfIDs.push(component.get('v.selectID'));
+        }
+
+        appAccountsIDsToDisplayEvent.setParam('accountsIDs', listOfIDs);
+        appAccountsIDsToDisplayEvent.fire();
     },
 })

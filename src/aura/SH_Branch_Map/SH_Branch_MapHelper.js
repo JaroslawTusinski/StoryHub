@@ -107,6 +107,8 @@
     },
 
     handleErrors : function(errors) {
+        // TODO - needs to be put in utils class
+
         let errorMessage = 'Unknown error';
 
         if (errors && Array.isArray(errors) && errors.length > 0) {
