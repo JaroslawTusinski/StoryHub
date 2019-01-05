@@ -21,7 +21,7 @@
         let newCredentialsObject = this.removeCredential(component, event);
 
         component.set('v.searchCredentialsObject', newCredentialsObject);
-        this.searchAccountByCredentials(component, newCredentialsObject);
+        this.searchAccountByCredentials(component, newCredentialsObject, true);
     },
 
     setSearchResults : function(component, event) {

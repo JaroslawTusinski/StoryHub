@@ -18,6 +18,16 @@ public with sharing class SH_Utils {
             'Title'
     };
 
+    public static Boolean getUserPermissionSet(){
+        List<PermissionSetAssignment> permsetForGivenUser = [
+                SELECT Id
+                FROM PermissionSetAssignment
+                WHERE AssigneeId = :UserInfo.getUserId()
+                    AND PermissionSet.Name = 'Permission_to_delete_accounts'];
+
+        return permsetForGivenUser.size() != 0;
+    }
+
     public static Map<String, String> getObjectLabelMap(String type) {
         Map<String, String> mapFieldsApiNameLabel = new Map<string, string>();
         Map<String, Schema.SObjectType> schemaMap = Schema.getGlobalDescribe();

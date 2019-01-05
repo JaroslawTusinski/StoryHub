@@ -16,9 +16,30 @@
             let accountID = accountsIDs[0];
 
             component.set('v.accountID', accountID);
+            this.getUserPermission(component);
             this.findDetailsToDisplay(component, accountID, true);
             this.findDetailsToDisplay(component, accountID, false);
         }
+    },
+
+    getUserPermission : function(component) {
+        let permission = component.get('c.checkUserPermissionSet');
+
+        permission.setCallback(this, function(response) {
+            let state = response.getState();
+
+            if (state === 'SUCCESS') {
+                component.set('v.userPermissionToDeleteButton', response.getReturnValue());
+            }
+            else {
+                let errors = response.getError();
+
+                this.handleErrors(errors);
+                component.set('v.userPermissionToDeleteButton', false);
+            }
+        });
+
+        $A.enqueueAction(permission);
     },
 
     findDetailsToDisplay : function(component, accountID, isAccount) {
@@ -52,11 +73,6 @@
                 this.prepareEmployeeToDisplay(component, response.getReturnValue());
             }
         }
-        else {
-            let errors = response.getError();
-
-            this.handleErrors(errors);
-        }
 
         this.switchSpinner(component, false);
     },
@@ -77,6 +93,7 @@
                 }
             });
 
+            component.set('v.isResultBodyNotEmpty', false); // #lightning XD
             component.set('v.isResultBodyNotEmpty', true);
         }
 
@@ -130,7 +147,14 @@
         const modal = component.find('modals');
         const employeeID = (event.currentTarget).dataset.value;
 
-        modal.setDeleteModalVisibility(employeeID, component.get('v.accountID'), 'User', true);
+        modal.setDeleteModalVisibility(component.get('v.accountID'), employeeID, 'Employee__c', true);
+        this.findDetailsToDisplay(component, accountID, false);
+    },
+
+    doAddEmployee : function(component, event) {
+        const modal = component.find('modals');
+
+        modal.setAddModalVisibility(component.get('v.accountID'), 'User', true);
         this.findDetailsToDisplay(component, accountID, false);
     },
 

@@ -3,6 +3,7 @@
 
     <aura:attribute name="isEditModalOpen" type="Boolean" default="{!false}"/>
     <aura:attribute name="isDeleteModalOpen" type="Boolean" default="{!false}"/>
+    <aura:attribute name="isAddModalOpen" type="Boolean" default="{!false}"/>
     <aura:attribute name="objectListToDisplay" type="Object[]"/>
     <aura:attribute name="objectType" type="String"/>
     <aura:attribute name="objectID" type="String"/>
@@ -22,21 +23,20 @@
         <aura:attribute name="objectName" type="String"/>
         <aura:attribute name="isVisibility" type="Boolean"/>
     </aura:method>
+    <aura:method name="setAddModalVisibility" action="{!c.setAddModalVisibility}" access="public">
+        <aura:attribute name="objectID" type="String"/>
+        <aura:attribute name="objectName" type="String"/>
+        <aura:attribute name="isVisibility" type="Boolean"/>
+    </aura:method>
 
     <!-- ########### Edit Modal ###########-->
     <aura:if isTrue="{!v.isEditModalOpen}">
         <section role="dialog" tabindex="-1" aria-labelledby="edit-modal-heading" aria-modal="true" aria-describedby="edit-modal-content-id" class="slds-modal slds-fade-in-open">
             <div class="slds-modal__container">
                 <header class="slds-modal__header">
-                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse">
-                        <div class="slds-button__icon slds-button__icon_large" aria-hidden="true">
-                            <lightning:icon iconName="utility:close"/>
-                        </div>
-
-                        <span class="slds-assistive-text">Close</span>
-                    </button>
-
-                    <h2 id="edit-modal-heading" class="slds-text-heading_medium slds-hyphenate">{!v.objectListToDisplay[0].value} {!v.objectListToDisplay[1].value}</h2>
+                    <h2 id="edit-modal-heading" class="slds-text-heading_medium slds-hyphenate">
+                            {!$Label.c.Edit_Link}
+                    </h2>
                 </header>
 
                 <div class="slds-modal__content slds-p-around_medium" id="edit-modal-content-id">
@@ -59,14 +59,9 @@
 
     <!-- ########### Delete Modal ###########-->
     <aura:if isTrue="{!v.isDeleteModalOpen}">
-        <div role="alertdialog" tabindex="-1" aria-labelledby="prompt-heading-id" aria-describedby="prompt-message-wrapper" class="slds-modal slds-fade-in-open slds-modal--prompt">
+        <div role="alertdialog" tabindex="-1" aria-labelledby="delete-heading-id" aria-describedby="delete-message-wrapper" class="slds-modal slds-fade-in-open slds-modal--prompt">
             <div class="slds-modal__container">
                 <div class="slds-modal__header slds-theme--error slds-theme--alert-texture">
-                    <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close">
-                        <lightning:icon iconName="utility:close"/>
-
-                        <span class="slds-assistive-text">Close</span>
-                    </button>
                 </div>
 
                 <div class="slds-modal__content slds-p-around--medium">
@@ -82,5 +77,43 @@
             </div>
         </div>
         <div class="slds-backdrop slds-backdrop--open"></div>
+    </aura:if>
+
+    <!-- ########### Add Modal ###########-->
+    <aura:if isTrue="{!v.isAddModalOpen}">
+        <section role="dialog" tabindex="-1" aria-labelledby="add-modal-heading" aria-modal="true" aria-describedby="add-modal-content-id" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <h2 id="add-modal-heading" class="slds-text-heading_medium slds-hyphenate">
+                            {!$Label.c.Button_add}
+                    </h2>
+                </header>
+
+                <div class="slds-modal__content slds-p-around_medium" id="add-modal-content-id">
+                    <div class="slds-grid slds-wrap">
+                        <aura:iteration items="{!v.objectListToDisplay}" var="object">
+                            <div class="slds-col slds-size_1-of-3 slds-text-align--center">
+                                <div class="user-box">
+                                    <div class="slds-media__figure">
+                                        <div aria-hidden="true" class="slds-icon slds-icon-standard-contact">
+                                            <lightning:icon iconName="utility:user"/>
+                                        </div>
+                                    </div><br/>
+                                        {!object.Name}<br/>
+                                        {!object.Title}<br/>
+                                        <button type="submit" onclick="{!c.addEmployeeToAccount}" class="slds-button slds-button_brand" data-id="{!object.Id}">{!$Label.c.Button_add}</button>
+                                </div>
+                            </div>
+                        </aura:iteration>
+                    </div>
+                </div>
+
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick="{!c.cancel}">{!$Label.c.Cancel_Button}</button>
+                </footer>
+            </div>
+        </section>
+
+        <div class="slds-backdrop slds-backdrop_open"></div>
     </aura:if>
 </aura:component>

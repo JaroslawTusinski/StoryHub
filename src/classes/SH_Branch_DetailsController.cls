@@ -33,4 +33,9 @@ public with sharing class SH_Branch_DetailsController {
 
         return null;
     }
+
+    @AuraEnabled
+    public static Boolean checkUserPermissionSet() {
+        return SH_Utils.getUserPermissionSet();
+    }
 }
