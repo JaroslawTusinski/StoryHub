@@ -36,9 +36,17 @@
         let state = response.getState();
 
         if (state === 'SUCCESS') {
-            if (component.get('v.objectType') != 'Employee__c') {
-                ($A.get('e.c:SH_SendInfoAfterAccountDeleteEvent')).fire();
-            }
+            let appEvent = $A.get('e.c:SH_SendInfoAfterAccountUpsertEvent');
+            let objID = [];
+
+            objID.push(component.get('v.objectID'));
+
+            appEvent.setParams({
+                accountsIDs : objID
+            });
+
+            appEvent.fire();
+            this.handleSuccess();
         }
         else {
             let errors = response.getError();
@@ -48,6 +56,45 @@
 
         component.set('v.isDeleteModalOpen', false);
         this.switchSpinner(component, false);
+    },
+
+    doAddModalVisibility : function(component, event) {
+        this.switchSpinner(component, true);
+
+        let argument = event.getParam('arguments');
+        let objectID = argument.objectID;
+        let objectName = argument.objectName;
+
+        if (argument.isVisibility) {
+            component.set('v.objectType', objectName);
+            component.set('v.objectID', objectID);
+            component.set('v.isAddModalOpen', true);
+            this.searchObjects(component, objectID);
+        }
+    },
+
+    searchObjects : function(component, objectID) {
+        let searchObjectByCredential = component.get('c.searchEmployees');
+
+        searchObjectByCredential.setParams({
+            accountID : objectID
+        });
+
+        searchObjectByCredential.setCallback(this, function(response) {
+            let state = response.getState();
+            if (state === 'SUCCESS') {
+                component.set('v.objectListToDisplay', response.getReturnValue());
+            }
+            else {
+                let errors = response.getError();
+
+                this.handleErrors(errors);
+            }
+
+            this.switchSpinner(component, false);
+        });
+
+        $A.enqueueAction(searchObjectByCredential);
     },
 
     doEditModalVisibility : function(component, event) {
@@ -99,6 +146,7 @@
     doCancel : function(component, event) {
         component.set('v.isEditModalOpen', false);
         component.set('v.isDeleteModalOpen', false);
+        component.set('v.isAddModalOpen', false);
     },
 
     doSave : function(component, event) {
@@ -116,17 +164,16 @@
         });
 
         saveObject.setCallback(this, function(response) {
-            this.saveCallback(component, response);
+            this.saveCallback(component, event, response);
         });
 
         $A.enqueueAction(saveObject);
     },
 
-    saveCallback : function(component, response) {
+    saveCallback : function(component, event, response) {
         let state = response.getState();
 
         if (state === 'SUCCESS') {
-            if (component.get('v.objectType') != 'Employee__c') {
                 let appEvent = $A.get('e.c:SH_SendInfoAfterAccountUpsertEvent');
                 let objID = [];
 
@@ -137,7 +184,6 @@
                 });
 
                 appEvent.fire();
-            }
 
             this.handleSuccess();
         }
@@ -147,8 +193,27 @@
             this.handleErrors(errors);
         }
 
-        component.set('v.isEditModalOpen', false);
+        this.doCancel(component, event);
         this.switchSpinner(component, false);
+    },
+
+    doAddEmployeeToAccount : function(component, event) {
+        this.switchSpinner(component, true);
+
+        let addObject = component.get('c.addRelationEmployeeAndAccount');
+        let accountID = component.get('v.objectID');
+        let userID = (event.currentTarget).dataset.id;
+
+        addObject.setParams({
+            accountID : accountID,
+            userID : userID
+        });
+
+        addObject.setCallback(this, function(response) {
+            this.saveCallback(component, event, response);
+        });
+
+        $A.enqueueAction(addObject);
     },
 
     returnSaveState : function(component, event) {

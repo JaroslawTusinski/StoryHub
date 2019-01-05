@@ -27,3 +27,20 @@
 .THIS .slds-tabs_default__content.slds-show {
     padding-bottom: 0rem;
 }
+
+.THIS .slds-media__figure {
+    margin: 0rem;
+}
+
+.THIS .slds-icon {
+    margin: 0 auto;
+}
+
+.THIS .user-box {
+    margin: 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid rgba(0, 0, 0, .1);
+}
+.THIS .user-box:hover {
+    background: rgba(27, 82, 151, .075);
+}

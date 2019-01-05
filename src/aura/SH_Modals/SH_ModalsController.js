@@ -7,6 +7,10 @@
         helper.doDeleteModalVisibility(component, event);
     },
 
+    setAddModalVisibility : function(component, event, helper) {
+        helper.doAddModalVisibility(component, event);
+    },
+
     cancel : function(component, event, helper) {
         helper.doCancel(component, event);
     },
@@ -17,5 +21,9 @@
 
     deleteObject : function(component, event, helper) {
         helper.doDelete(component, event);
+    },
+
+    addEmployeeToAccount : function(component, event, helper) {
+        helper.doAddEmployeeToAccount(component, event);
     },
 })

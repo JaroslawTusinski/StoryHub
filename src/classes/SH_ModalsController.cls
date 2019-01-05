@@ -106,14 +106,14 @@ public with sharing class SH_ModalsController {
         }
 
         try {
-            obj = Database.query('SELECT Id FROM ' + objectName + ' WHERE ' + firstObj + ' = ' + objectID + ' AND ' + secondObj + ' = ' + secondObjectID);
+            obj = Database.query('SELECT Id FROM ' + objectName + ' WHERE ' + firstObj + ' = \'' + objectID + '\' AND ' + secondObj + ' = \'' + secondObjectID + '\'');
 
             delete obj;
             return true;
         }
         catch (Exception ex) {
             try {
-                obj = Database.query('SELECT Id FROM ' + objectName + ' WHERE ' + secondObj + ' = ' + objectID + ' AND ' + firstObj + ' = ' + secondObjectID);
+                obj = Database.query('SELECT Id FROM ' + objectName + ' WHERE ' + secondObj + ' = \'' + objectID + '\' AND ' + firstObj + ' = \'' + secondObjectID + '\'');
 
                 delete obj;
                 return true;
@@ -121,6 +121,56 @@ public with sharing class SH_ModalsController {
             catch (Exception e) {
                 throw e;
             }
+        }
+    }
+
+    @AuraEnabled
+    public static List<User> searchEmployees(String accountID) {
+        List<Employee__c> usersByAccountID = [SELECT User__c FROM Employee__c WHERE Account__c = :accountID];
+
+        if (!usersByAccountID.isEmpty()) {
+            SH_Utils.QueryBuilder queryBuilder = new SH_Utils.QueryBuilder();
+            List<Employee__c> users;
+            List<String> fieldList = new List<String>{
+                    'Id', 'Name', 'Title'
+            };
+
+            for (String field : fieldList) {
+                queryBuilder.addSelect(field);
+            }
+
+            queryBuilder.addFrom('User');
+            queryBuilder.addWhere('Profile.UserLicense.Name like \'%Salesforce%\'');
+
+            for (Integer i = 0; i < usersByAccountID.size(); i++) {
+                queryBuilder.addAND();
+                queryBuilder.addWhere('Id != \'' + usersByAccountID[i].User__c + '\'');
+            }
+
+            queryBuilder.addSort('Name');
+            queryBuilder.addSort('Title');
+
+            System.debug(queryBuilder.getQuery());
+
+            return Database.query(queryBuilder.getQuery());
+        }
+
+        return null;
+    }
+
+    @AuraEnabled
+    public static Boolean addRelationEmployeeAndAccount(String accountID, String userID) {
+        Employee__c e = new Employee__c();
+
+        e.User__c = userID;
+        e.Account__c = accountID;
+
+        try {
+            insert e;
+            return true;
+        }
+        catch (Exception ex) {
+            throw ex;
         }
     }
 }
