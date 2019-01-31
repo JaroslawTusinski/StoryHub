@@ -1,65 +1,81 @@
 ({
     doDeleteAccount : function(component, event) {
-        const modal = component.find('modals');
-        const accountID = component.get('v.accountID');
+        const modals = component.find('modals');
 
-        modal.setDeleteModalVisibility(accountID, '', 'Account', true);
+        if (modals) {
+            const accountID = component.get('v.accountID');
+
+            modals.setDeleteModalVisibility(accountID, '', 'Account', true);
+        }
+        else {
+            console.error("'modals' does not exist");
+        }
     },
 
     findDetails : function(component, event) {
         let accountsIDs = event.getParam('accountsIDs');
 
-        if (accountsIDs === undefined || accountsIDs.length != 1) {
-            component.set('v.isResultBodyNotEmpty', false);
-        }
-        else {
+        if (accountsIDs && accountsIDs.length == 1) {
             let accountID = accountsIDs[0];
 
             component.set('v.accountID', accountID);
-            this.getUserPermission(component);
+            this.setUserPermission(component);
             this.findDetailsToDisplay(component, accountID, true);
             this.findDetailsToDisplay(component, accountID, false);
         }
+        else {
+            component.set('v.isResultBodyNotEmpty', false);
+        }
     },
 
-    getUserPermission : function(component) {
-        let permission = component.get('c.checkUserPermissionSet');
+    setUserPermission : function(component) {
+        let permission = component.get('c.checkUserPermissionToDelete');
 
-        permission.setCallback(this, function(response) {
-            let state = response.getState();
+        if (permission) {
+            permission.setCallback(this, function(response) {
+                let state = response.getState();
 
-            if (state === 'SUCCESS') {
-                component.set('v.userPermissionToDeleteButton', response.getReturnValue());
-            }
-            else {
-                let errors = response.getError();
+                if (state === 'SUCCESS') {
+                    component.set('v.userPermissionToDeleteButton', response.getReturnValue());
+                }
+                else {
+                    let errors = response.getError();
 
-                this.handleErrors(errors);
-                component.set('v.userPermissionToDeleteButton', false);
-            }
-        });
+                    this.handleErrors(errors);
+                    component.set('v.userPermissionToDeleteButton', false);
+                }
+            });
 
-        $A.enqueueAction(permission);
+            $A.enqueueAction(permission);
+        }
+        else {
+            console.error("'permission' does not exist");
+        }
     },
 
     findDetailsToDisplay : function(component, accountID, isAccount) {
         let searchAccountByID;
 
         if (isAccount) {
-            searchAccountByID = component.get('c.searchAccountByID');
+            searchAccountByID = component.get('c.getAccountByID');
         }
         else {
             searchAccountByID = component.get('c.searchEmployeesByAccountID');
         }
 
-        searchAccountByID.setParam('accountID', accountID);
-        this.switchSpinner(component, true);
+        if (searchAccountByID) {
+            searchAccountByID.setParam('accountID', accountID);
+            this.switchSpinner(component, true);
 
-        searchAccountByID.setCallback(this, function(response) {
-            this.searchCallback(component, response, isAccount);
-        });
+            searchAccountByID.setCallback(this, function(response) {
+                this.searchCallback(component, response, isAccount);
+            });
 
-        $A.enqueueAction(searchAccountByID);
+            $A.enqueueAction(searchAccountByID);
+        }
+        else {
+            console.error("'searchAccountByID' is undefined");
+        }
     },
 
     searchCallback : function(component, response, isAccount) {
@@ -73,6 +89,9 @@
                 this.prepareEmployeeToDisplay(component, response.getReturnValue());
             }
         }
+        else {
+            console.error("state error - " + response.getReturnValue());
+        }
 
         this.switchSpinner(component, false);
     },
@@ -81,7 +100,7 @@
         let accountFields = Object.keys(account);
         let accountDetails = [];
 
-        if (account != undefined) {
+        if (account) {
             accountFields.forEach(function(accountKey) {
                 if (accountKey != 'Id') {
                     let accountObject = {
@@ -105,7 +124,7 @@
         let listOfEmployees = [];
         let employeeObject;
 
-        if (employees != undefined) {
+        if (employees) {
             employees.forEach(function(employee) {
                 employeeFields = Object.keys(employee);
                 employeeObject = [];
@@ -128,40 +147,67 @@
     },
 
     doEditAccount : function(component, event) {
-        const modal = component.find('modals');
-        const accountID = component.get('v.accountID');
+        const modals = component.find('modals');
 
-        modal.setEditModalVisibility(accountID, 'Account', true);
+        if (modals) {
+            const accountID = component.get('v.accountID');
+
+            modals.setEditModalVisibility(accountID, 'Account', true);
+        }
+        else {
+            console.error("'modals' does not exist");
+        }
     },
 
     doEditEmployee : function(component, event) {
-        const modal = component.find('modals');
-        const employeeID = (event.currentTarget).dataset.value;
-        const accountID = component.get('v.accountID');
+        const modals = component.find('modals');
 
-        modal.setEditModalVisibility(employeeID, 'User', true);
-        this.findDetailsToDisplay(component, accountID, false);
+        if (modals) {
+            const employeeID = (event.currentTarget).dataset.value;
+            const accountID = component.get('v.accountID');
+
+            modals.setEditModalVisibility(employeeID, 'User', true);
+            this.findDetailsToDisplay(component, accountID, false);
+        }
+        else {
+            console.error("'modals' does not exist");
+        }
     },
 
     doRemoveEmployee : function(component, event) {
-        const modal = component.find('modals');
-        const employeeID = (event.currentTarget).dataset.value;
+        const modals = component.find('modals');
 
-        modal.setDeleteModalVisibility(component.get('v.accountID'), employeeID, 'Employee__c', true);
-        this.findDetailsToDisplay(component, accountID, false);
+        if (modals) {
+            const employeeID = (event.currentTarget).dataset.value;
+
+            modals.setDeleteModalVisibility(component.get('v.accountID'), employeeID, 'Employee__c', true);
+            this.findDetailsToDisplay(component, accountID, false);
+        }
+        else {
+            console.error("'modals' does not exist");
+        }
     },
 
     doAddEmployee : function(component, event) {
-        const modal = component.find('modals');
+        const modals = component.find('modals');
 
-        modal.setAddModalVisibility(component.get('v.accountID'), 'User', true);
-        this.findDetailsToDisplay(component, accountID, false);
+        if (modals) {
+            const accountID = component.get('v.accountID');
+
+            modals.setAddModalVisibility(accountID, 'User', true);
+            this.findDetailsToDisplay(component, accountID, false);
+        }
+        else {
+            console.error("'modals' does not exist");
+        }
     },
 
     switchSpinner : function(component, status) {
         const spinnerComponent = component.find('spinner');
 
-        spinnerComponent.switchSpinner(status);
+        if (spinnerComponent) {
+            spinnerComponent.switchSpinner(status);
+        }
     },
 
     handleErrors : function(errors) {

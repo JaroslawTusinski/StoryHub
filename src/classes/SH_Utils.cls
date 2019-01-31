@@ -18,7 +18,7 @@ public with sharing class SH_Utils {
             'Title'
     };
 
-    public static Boolean getUserPermissionSet(){
+    public static Boolean getUserPermissionSet_Permission_to_delete_accounts(){
         List<PermissionSetAssignment> permsetForGivenUser = [
                 SELECT Id
                 FROM PermissionSetAssignment
@@ -55,71 +55,96 @@ public with sharing class SH_Utils {
             qWhere = '';
         }
 
-        public void addSelect(String field){
+        public QueryBuilder addSelect(String field){
             qSelect.add(field);
+
+            return this;
         }
-        public void addSelect(List<String> fields){
+        public QueryBuilder addSelect(List<String> fields){
             qSelect.addAll(fields);
+
+            return this;
         }
 
-        public void addFrom(String fromObject){
+        public QueryBuilder addFrom(String fromObject){
             qFrom = fromObject;
+
+            return this;
         }
 
-        public void addAND(){
+        public QueryBuilder addAND(){
             addWhere('AND ');
+
+            return this;
         }
-        public void startANDBlock(){
+        public QueryBuilder startANDBlock(){
             addWhere('AND ( ');
+
+            return this;
         }
 
-        public void addOR(){
+        public QueryBuilder addOR(){
             addWhere('OR ');
+
+            return this;
         }
-        public void startORBlock(){
+        public QueryBuilder startORBlock(){
             addWhere('OR ( ');
+
+            return this;
         }
 
-        public void startINBlock(){
+        public QueryBuilder startINBlock(){
             addWhere('IN ( ');
+
+            return this;
         }
 
-        public void closeBlock(){
+        public QueryBuilder closeBlock(){
             addWhere(') ');
+
+            return this;
         }
 
-        public void addWhere(String whereField){
+        public QueryBuilder addWhere(String whereField){
             qWhere += (whereField + ' ');
+
+            return this;
         }
-        public void addWhereAND(List<String> whereFields){
+        public QueryBuilder addWhereAND(List<String> whereFields){
             for (String field : whereFields) {
                 addAND();
                 addWhere(field);
             }
+
+            return this;
         }
-        public void addWhereOR(List<String> whereFields){
+        public QueryBuilder addWhereOR(List<String> whereFields){
             for (String field : whereFields) {
                 addOR();
                 addWhere(field);
             }
+
+            return this;
         }
 
-        public void addSort(String field){
+        public QueryBuilder addSort(String field){
             qSort.add(field);
+
+            return this;
         }
-        public void addSort(List<String> fields){
+        public QueryBuilder addSort(List<String> fields){
             qSort.addAll(fields);
+
+            return this;
         }
-        public void addSort(String field, String sortOrder){
+        public QueryBuilder addSort(String field, String sortOrder){
             qSort.add(field + ' ' + sortOrder);
-        }
-        public void addSort(List<String> fields, List<String> sortOrders){
-            for (Integer i = 0; i < fields.size(); i++) {
-                addSort(fields[i], sortOrders[i]);
-            }
+
+            return this;
         }
 
-        public String getQuery() {
+        public String buildQuery() {
             String query;
 
             query = 'SELECT' + constructQuery(qSelect);

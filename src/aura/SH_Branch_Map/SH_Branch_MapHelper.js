@@ -13,18 +13,23 @@
     createMapMarks : function(component, event) {
         let listOfIDs = event.getParam('accountsIDs');
 
-        if (listOfIDs.length > 0) {
+        if (listOfIDs && listOfIDs.length > 0) {
             let searchAccountsToMarkByID = component.get('c.searchAccountByID');
 
-            searchAccountsToMarkByID.setParams({
-                accountsIDs : listOfIDs
-            });
+            if (searchAccountsToMarkByID) {
+                searchAccountsToMarkByID.setParams({
+                    accountsIDs : listOfIDs
+                });
 
-            searchAccountsToMarkByID.setCallback(this, function(response) {
-                this.accountSearchCallback(component, response);
-            });
+                searchAccountsToMarkByID.setCallback(this, function(response) {
+                    this.accountSearchCallback(component, response);
+                });
 
-            $A.enqueueAction(searchAccountsToMarkByID);
+                $A.enqueueAction(searchAccountsToMarkByID);
+            }
+            else {
+                console.error("'searchAccountByID' does not exist");
+            }
         }
         else {
             let map = component.get('v.map');
@@ -99,7 +104,7 @@
     },
 
     clearMarks : function(map, currentMarkers) {
-        if (currentMarkers != undefined) {
+        if (currentMarkers) {
             currentMarkers.forEach(function(mark) {
                 map.removeLayer(mark);
             });

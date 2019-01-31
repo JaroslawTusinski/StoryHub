@@ -1,35 +1,47 @@
 ({
     doDeleteModalVisibility : function(component, event) {
-        let argument = event.getParam('arguments');
-        let objectID = argument.objectID;
-        let secondObjectID = argument.secondObjectID;
-        let objectName = argument.objectName;
+        let args = event.getParam('arguments');
 
-        if (argument.isVisibility) {
-            component.set('v.objectType', objectName);
-            component.set('v.objectID', objectID);
-            component.set('v.secondObjectID', secondObjectID);
-            component.set('v.isDeleteModalOpen', true);
+        if (args) {
+            let objectID = args.objectID;
+            let secondObjectID = args.secondObjectID;
+            let objectName = args.objectName;
+
+            if (args.isVisibility) {
+                component.set('v.objectType', objectName);
+                component.set('v.objectID', objectID);
+                component.set('v.secondObjectID', secondObjectID);
+                component.set('v.isDeleteModalOpen', true);
+            }
+        }
+        else {
+            console.error("'args' does not exist");
         }
     },
 
     doDelete : function(component, event) {
-        let deleteObjectByCredentials = component.get('c.deleteObjectByID');
-        let objectID = component.get('v.objectID');
-        let secondObjectID = component.get('v.secondObjectID');
-        let objectName = component.get('v.objectType');
+        const deleteObjectByCredentials = component.get('c.deleteObjectByID');
 
-        deleteObjectByCredentials.setParams({
-            objectID : objectID,
-            secondObjectID : secondObjectID,
-            objectName : objectName
-        });
+        if (deleteObjectByCredentials) {
+            let objectID = component.get('v.objectID');
+            let secondObjectID = component.get('v.secondObjectID');
+            let objectName = component.get('v.objectType');
 
-        deleteObjectByCredentials.setCallback(this, function(response) {
-            this.deleteCallback(component, response);
-        });
+            deleteObjectByCredentials.setParams({
+                objectID : objectID,
+                secondObjectID : secondObjectID,
+                objectName : objectName
+            });
 
-        $A.enqueueAction(deleteObjectByCredentials);
+            deleteObjectByCredentials.setCallback(this, function(response) {
+                this.deleteCallback(component, response);
+            });
+
+            $A.enqueueAction(deleteObjectByCredentials);
+        }
+        else {
+            console.error("'deleteObjectByID' does not exist");
+        }
     },
 
     deleteCallback : function(component, response) {
@@ -59,73 +71,96 @@
     },
 
     doAddModalVisibility : function(component, event) {
-        this.switchSpinner(component, true);
+        let args = event.getParam('arguments');
 
-        let argument = event.getParam('arguments');
-        let objectID = argument.objectID;
-        let objectName = argument.objectName;
+        if (args) {
+            this.switchSpinner(component, true);
 
-        if (argument.isVisibility) {
-            component.set('v.objectType', objectName);
-            component.set('v.objectID', objectID);
-            component.set('v.isAddModalOpen', true);
-            this.searchObjects(component, objectID);
+            let objectID = args.objectID;
+            let objectName = args.objectName;
+
+            if (args.isVisibility) {
+                component.set('v.objectType', objectName);
+                component.set('v.objectID', objectID);
+                component.set('v.isAddModalOpen', true);
+                this.searchObjects(component, objectID);
+            }
+        }
+        else {
+            console.error("'args' does not exist");
         }
     },
 
     searchObjects : function(component, objectID) {
         let searchObjectByCredential = component.get('c.searchEmployees');
 
-        searchObjectByCredential.setParams({
-            accountID : objectID
-        });
+        if (searchObjectByCredential) {
+            searchObjectByCredential.setParams({
+                accountID : objectID
+            });
 
-        searchObjectByCredential.setCallback(this, function(response) {
-            let state = response.getState();
-            if (state === 'SUCCESS') {
-                component.set('v.objectListToDisplay', response.getReturnValue());
-            }
-            else {
-                let errors = response.getError();
+            searchObjectByCredential.setCallback(this, function(response) {
+                let state = response.getState();
+                if (state === 'SUCCESS') {
+                    component.set('v.objectListToDisplay', response.getReturnValue());
+                }
+                else {
+                    let errors = response.getError();
 
-                this.handleErrors(errors);
-            }
+                    this.handleErrors(errors);
+                }
 
-            this.switchSpinner(component, false);
-        });
+                this.switchSpinner(component, false);
+            });
 
-        $A.enqueueAction(searchObjectByCredential);
+            $A.enqueueAction(searchObjectByCredential);
+        }
+        else {
+            console.error("'searchEmployees' does not exist");
+        }
     },
 
     doEditModalVisibility : function(component, event) {
-        let argument = event.getParam('arguments');
-        let objectID = argument.objectID;
-        let objectName = argument.objectName;
+        let args = event.getParam('arguments');
 
-        this.switchSpinner(component, true);
+        if (args) {
+            let objectID = args.objectID;
+            let objectName = args.objectName;
 
-        if (argument.isVisibility) {
-            component.set('v.isEditModalOpen', true);
-            component.set('v.objectType', objectName);
-            component.set('v.objectID', objectID);
-            this.searchObject(component, objectID, objectName);
+            this.switchSpinner(component, true);
+
+            if (args.isVisibility) {
+                component.set('v.isEditModalOpen', true);
+                component.set('v.objectType', objectName);
+                component.set('v.objectID', objectID);
+                this.searchObject(component, objectID, objectName);
+            }
+        }
+        else {
+            console.error("'args' does not exist");
         }
     },
 
     searchObject : function(component, objectID, objectName) {
         let searchObjectByCredentials = component.get('c.searchObjectByID');
 
-        searchObjectByCredentials.setParams({
-            objectID : objectID,
-            objectName : objectName
-        });
 
-        searchObjectByCredentials.setCallback(this, function(response) {
-            this.searchCallback(component, response);
-        });
+        if (searchObjectByCredentials) {
+            searchObjectByCredentials.setParams({
+                objectID : objectID,
+                objectName : objectName
+            });
 
-        searchObjectByCredentials.setStorable();
-        $A.enqueueAction(searchObjectByCredentials);
+            searchObjectByCredentials.setCallback(this, function(response) {
+                this.searchCallback(component, response);
+            });
+
+            searchObjectByCredentials.setStorable();
+            $A.enqueueAction(searchObjectByCredentials);
+        }
+        else {
+            console.error("'searchObjectByID' does not exist");
+        }
     },
 
     searchCallback : function(component, response) {
@@ -153,21 +188,27 @@
         this.switchSpinner(component, true);
 
         let saveObject = component.get('c.saveObject');
-        let objJSON = JSON.stringify(component.get('v.objectListToDisplay'));
-        let objName = component.get('v.objectType');
-        let objID = component.get('v.objectID');
 
-        saveObject.setParams({
-            objectJSON : objJSON,
-            objectName : objName,
-            objectID : objID
-        });
+        if (saveObject) {
+            let objJSON = JSON.stringify(component.get('v.objectListToDisplay'));
+            let objName = component.get('v.objectType');
+            let objID = component.get('v.objectID');
 
-        saveObject.setCallback(this, function(response) {
-            this.saveCallback(component, event, response);
-        });
+            saveObject.setParams({
+                objectJSON : objJSON,
+                objectName : objName,
+                objectID : objID
+            });
 
-        $A.enqueueAction(saveObject);
+            saveObject.setCallback(this, function(response) {
+                this.saveCallback(component, event, response);
+            });
+
+            $A.enqueueAction(saveObject);
+        }
+        else {
+            console.error("'saveObject' does not exist");
+        }
     },
 
     saveCallback : function(component, event, response) {
@@ -201,19 +242,26 @@
         this.switchSpinner(component, true);
 
         let addObject = component.get('c.addRelationEmployeeAndAccount');
-        let accountID = component.get('v.objectID');
-        let userID = (event.currentTarget).dataset.id;
 
-        addObject.setParams({
-            accountID : accountID,
-            userID : userID
-        });
+            if (addObject) {
 
-        addObject.setCallback(this, function(response) {
-            this.saveCallback(component, event, response);
-        });
+            let accountID = component.get('v.objectID');
+            let userID = (event.currentTarget).dataset.id;
 
-        $A.enqueueAction(addObject);
+            addObject.setParams({
+                accountID : accountID,
+                userID : userID
+            });
+
+            addObject.setCallback(this, function(response) {
+                this.saveCallback(component, event, response);
+            });
+
+            $A.enqueueAction(addObject);
+        }
+        else {
+            console.error("'addRelationEmployeeAndAccount' does not exist");
+        }
     },
 
     returnSaveState : function(component, event) {
@@ -256,6 +304,11 @@
     switchSpinner : function(component, status) {
         const spinnerComponent = component.find('spinner');
 
-        spinnerComponent.switchSpinner(status);
+        if (spinnerComponent) {
+            spinnerComponent.switchSpinner(status);
+        }
+        else {
+            console.error("'spinner' does not exist");
+        }
     },
 })

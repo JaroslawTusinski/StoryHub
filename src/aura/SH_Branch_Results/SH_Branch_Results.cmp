@@ -3,8 +3,6 @@
 
     <c:SH_Spinner aura:id="spinner"/>
 
-    <aura:attribute name="cross" type="String" default="✖"/>
-
     <aura:attribute name="searchCredentials" type="Object[]"/>
     <aura:attribute name="searchResults" type="String[]"/>
     <aura:attribute name="searchCredentialsObject" type="Object"/>
@@ -26,7 +24,7 @@
                     </a>
 
                     <button class="slds-button slds-button_icon slds-button_icon slds-pill__remove" onclick="{!c.removeCredential}" data-key="{!credential.key}" title="{!$Label.c.Remove_Tooltip}">
-                            {!v.cross}
+                         <lightning:icon iconName="utility:close"/>
                     </button>
                 </span>
             </aura:iteration>

@@ -3,15 +3,19 @@
         const credentialKey = (event.currentTarget).dataset.key;
         let searchCredentialsObject = component.get('v.searchCredentialsObject');
         let searchCredentials = component.get('v.searchCredentials');
-        let i = 0;
-        searchCredentialsObject[credentialKey] = '';
 
-        while(searchCredentials[i].key != credentialKey) {
-            i++;
+        if (credentialKey && searchCredentialsObject && searchCredentials) {
+            let i = 0;
+            searchCredentialsObject[credentialKey] = '';
+
+            while(searchCredentials[i].key != credentialKey) {
+                i++;
+            }
+
+            searchCredentials.splice(i, 1);
+            component.set('v.searchCredentials', searchCredentials);
         }
 
-        searchCredentials.splice(i, 1);
-        component.set('v.searchCredentials', searchCredentials);
         return searchCredentialsObject;
     },
 
@@ -37,9 +41,9 @@
         }
         else {
             component.set('v.isResultBodyNotEmpty', false);
-            component.set('v.searchCredentials', undefined);
+            component.set('v.searchCredentials', null);
             this.switchSpinner(component, false);
-            this.prepareAccountsIDsToDisplayEvent(component, undefined, true);
+            this.prepareAccountsIDsToDisplayEvent(component, null, true);
         }
     },
 
@@ -70,15 +74,20 @@
     searchAccountByCredentials : function(component, searchCredentialsObject, resetMapMarks) {
         let searchAccountByCredentialsObject = component.get('c.searchAccountByCredentialsObject');
 
-        searchAccountByCredentialsObject.setParams({
-            credentialsObjectJSON : JSON.stringify(searchCredentialsObject)
-        });
+        if (searchAccountByCredentialsObject) {
+            searchAccountByCredentialsObject.setParams({
+                credentialsObjectJSON : JSON.stringify(searchCredentialsObject)
+            });
 
-        searchAccountByCredentialsObject.setCallback(this, function(response) {
-            this.accountSearchCallback(component, response, resetMapMarks);
-        });
+            searchAccountByCredentialsObject.setCallback(this, function(response) {
+                this.accountSearchCallback(component, response, resetMapMarks);
+            });
 
-        $A.enqueueAction(searchAccountByCredentialsObject);
+            $A.enqueueAction(searchAccountByCredentialsObject);
+        }
+        else {
+            console.error("'searchAccountByCredentialsObject' does not exist");
+        }
     },
 
     accountSearchCallback : function(component, response, resetMapMarks) {
@@ -144,7 +153,12 @@
     switchSpinner : function(component, status) {
         const spinnerComponent = component.find('spinner');
 
-        spinnerComponent.switchSpinner(status);
+        if (spinnerComponent) {
+            spinnerComponent.switchSpinner(status);
+        }
+        else {
+            console.error("'spinner' does not exist");
+        }
     },
 
     prepareAccountsIDsToDisplayEvent : function(component, searchResults, resetMapMarks) {
@@ -156,7 +170,7 @@
                 listOfIDs.push(searchResults);
                 component.set('v.selectID', searchResults);
             }
-            else if (searchResults != undefined) {
+            else if (searchResults) {
                 searchResults.forEach(function(account) {
                     listOfIDs.push(account.Id);
                 });

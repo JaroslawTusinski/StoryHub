@@ -1,8 +1,8 @@
 ({
     doSwitchSpinner : function(component, event) {
-        let argument = event.getParam('arguments');
+        let args = event.getParam('arguments');
 
-        if (argument.status) {
+        if (args && args.status) {
             component.set('v.isSpinnerRun', true);
         }
         else {

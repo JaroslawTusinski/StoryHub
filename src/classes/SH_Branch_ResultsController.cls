@@ -5,28 +5,18 @@ public with sharing class SH_Branch_ResultsController {
         SH_Utils.QueryBuilder queryBuilder = new SH_Utils.QueryBuilder();
         List<String> fieldList = new List<String>{'Id', 'Name', 'Type', 'Phone', 'BillingCountry', 'BillingCity', 'ShippingCountry', 'ShippingCity'};
 
-        queryBuilder.addSelect(fieldList);
-        queryBuilder.addFrom('Account');
-        queryBuilder.addWhere('RecordType.DeveloperName = \'Shop\'');
-        queryBuilder.startANDBlock();
-        queryBuilder.addWhere('BillingCountry LIKE \'' + credentials.country + '%\'');
-        queryBuilder.addOR();
-        queryBuilder.addWhere('ShippingCountry LIKE \'' + credentials.country + '%\'');
-        queryBuilder.closeBlock();
-        queryBuilder.startANDBlock();
-        queryBuilder.addWhere('BillingCity LIKE \'' + credentials.city + '%\'');
-        queryBuilder.addOR();
-        queryBuilder.addWhere('ShippingCity LIKE \'' + credentials.city + '%\'');
-        queryBuilder.closeBlock();
-        queryBuilder.addSort('Name');
-        queryBuilder.addSort('ShippingCountry');
-        queryBuilder.addSort('BillingCountry');
-        queryBuilder.addSort('ShippingCity');
-        queryBuilder.addSort('BillingCity');
-        queryBuilder.addSort('ShippingStreet');
-        queryBuilder.addSort('BillingStreet');
+        queryBuilder.addSelect(fieldList)
+                    .addFrom('Account')
+                    .addWhere('RecordType.DeveloperName = \'Shop\'').startANDBlock()
+                        .addWhere('BillingCountry LIKE \'' + credentials.country + '%\'').addOR()
+                        .addWhere('ShippingCountry LIKE \'' + credentials.country + '%\'')
+                    .closeBlock().startANDBlock()
+                        .addWhere('BillingCity LIKE \'' + credentials.city + '%\'').addOR()
+                        .addWhere('ShippingCity LIKE \'' + credentials.city + '%\'')
+                    .closeBlock()
+                    .addSort('Name').addSort('ShippingCountry').addSort('BillingCountry').addSort('ShippingCity').addSort('BillingCity').addSort('ShippingStreet').addSort('BillingStreet');
 
-        return Database.query(queryBuilder.getQuery());
+        return Database.query(queryBuilder.buildQuery());
     }
 
     private class CredentialsObject {

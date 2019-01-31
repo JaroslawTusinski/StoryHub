@@ -10,6 +10,9 @@ public with sharing class SH_ModalsController {
             when 'User' {
                 listOfFields = SH_Utils.employeeFieldList;
             }
+            when else {
+                listOfFields = new List<String>();
+            }
         }
 
         return searchObjectDetailsByID(listOfFields, objectID, objectName);
@@ -18,11 +21,11 @@ public with sharing class SH_ModalsController {
     private static String searchObjectDetailsByID(List<String> fieldList, String objectID, String objectName) {
         SH_Utils.QueryBuilder queryBuilder = new SH_Utils.QueryBuilder();
 
-        queryBuilder.addSelect(fieldList);
-        queryBuilder.addFrom(objectName);
-        queryBuilder.addWhere('Id = \'' + objectID + '\'');
+        queryBuilder.addSelect(fieldList)
+                    .addFrom(objectName)
+                    .addWhere('Id = \'' + objectID + '\'');
 
-        return objectListCreator(fieldList, Database.query(queryBuilder.getQuery()).get(0), objectName);
+        return objectListCreator(fieldList, Database.query(queryBuilder.buildQuery()).get(0), objectName);
     }
 
     private static String objectListCreator(List<String> fieldList, SObject obj, String objectName) {
@@ -31,7 +34,7 @@ public with sharing class SH_ModalsController {
 
         for (String key : fieldList) {
             Boolean require = false;
-            if (key.equals('Id') || key.equals('Name')) {
+            if (key.equalsIgnoreCase('Id') || key.equalsIgnoreCase('Name')) {
                 require = true;
             }
 
@@ -54,20 +57,25 @@ public with sharing class SH_ModalsController {
     }
 
     private static Boolean updateObject(List<SH_Utils.ModalObjectTemplate> modObjTem, String objectID, String objectName) {
-        sObject obj = Schema.getGlobalDescribe().get(objectName).newSObject();
+        Schema.SObjectType objType = Schema.getGlobalDescribe().get(objectName);
 
-        obj.put('Id', objectID);
-        for (SH_Utils.ModalObjectTemplate field : modObjTem) {
-            obj.put(field.key, field.value);
+        if (objType != null) {
+            sObject obj = objType.newSObject();
+
+            obj.put('Id', objectID);
+            for (SH_Utils.ModalObjectTemplate field : modObjTem) {
+                obj.put(field.key, field.value);
+            }
+
+            try {
+                update obj;
+                return true;
+            } catch (Exception e) {
+                throw e;
+            }
         }
 
-        try {
-            update obj;
-            return true;
-        }
-        catch (Exception e) {
-            throw e;
-        }
+        return false;
     }
 
     @AuraEnabled
@@ -75,22 +83,27 @@ public with sharing class SH_ModalsController {
         if (String.isNotBlank(objectID) && String.isNotBlank(secondObjectID)) {
             return deleteJunctionObject(objectID, secondObjectID, objectName);
         }
-        else {
-            return deleteObject(objectID, objectName);
-        }
+
+        return deleteObject(objectID, objectName);
     }
 
     private static Boolean deleteObject(String objectID, String objectName) {
-        sObject obj = Schema.getGlobalDescribe().get(objectName).newSObject();
-        obj.put('Id', objectID);
+        Schema.SObjectType objType = Schema.getGlobalDescribe().get(objectName);
 
-        try {
-            delete obj;
-            return true;
+        if (objType != null) {
+            sObject obj = objType.newSObject();
+            obj.put('Id', objectID);
+
+            try {
+                delete obj;
+                return true;
+            }
+            catch (Exception e) {
+                throw e;
+            }
         }
-        catch (Exception e) {
-            throw e;
-        }
+
+        return false;
     }
 
     private static Boolean deleteJunctionObject(String objectID, String secondObjectID, String objectName) { // TODO - needs refactoring
@@ -126,36 +139,28 @@ public with sharing class SH_ModalsController {
 
     @AuraEnabled
     public static List<User> searchEmployees(String accountID) {
+        System.debug('accountID : ' + accountID);
         List<Employee__c> usersByAccountID = [SELECT User__c FROM Employee__c WHERE Account__c = :accountID];
+        SH_Utils.QueryBuilder queryBuilder = new SH_Utils.QueryBuilder();
+        List<String> fieldList = new List<String>{
+                'Id', 'Name', 'Title'
+        };
+
+        queryBuilder.addSelect(fieldList)
+                    .addFrom('User')
+                    .addWhere('Profile.UserLicense.Name like \'%Salesforce%\'');
 
         if (!usersByAccountID.isEmpty()) {
-            SH_Utils.QueryBuilder queryBuilder = new SH_Utils.QueryBuilder();
-            List<Employee__c> users;
-            List<String> fieldList = new List<String>{
-                    'Id', 'Name', 'Title'
-            };
-
-            for (String field : fieldList) {
-                queryBuilder.addSelect(field);
-            }
-
-            queryBuilder.addFrom('User');
-            queryBuilder.addWhere('Profile.UserLicense.Name like \'%Salesforce%\'');
-
             for (Integer i = 0; i < usersByAccountID.size(); i++) {
-                queryBuilder.addAND();
-                queryBuilder.addWhere('Id != \'' + usersByAccountID[i].User__c + '\'');
+                queryBuilder.addAND().addWhere('Id != \'' + usersByAccountID[i].User__c + '\'');
             }
-
-            queryBuilder.addSort('Name');
-            queryBuilder.addSort('Title');
-
-            System.debug(queryBuilder.getQuery());
-
-            return Database.query(queryBuilder.getQuery());
         }
 
-        return null;
+        queryBuilder.addSort('Name').addSort('Title');
+
+        System.debug(queryBuilder.buildQuery());
+
+        return Database.query(queryBuilder.buildQuery());
     }
 
     @AuraEnabled

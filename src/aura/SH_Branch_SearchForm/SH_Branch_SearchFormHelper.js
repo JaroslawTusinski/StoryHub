@@ -8,8 +8,8 @@
     doClearSearchParametersForSearchCredentialsEvent : function(component, event) {
         let searchCredentials = this.setCredentialObjectParameters('', '');
 
-        component.set('v.inputCityName', undefined);
-        component.set('v.inputCountryName', undefined);
+        component.set('v.inputCityName', '');
+        component.set('v.inputCountryName', '');
 
         this.fireAppEvent(searchCredentials, false);
     },

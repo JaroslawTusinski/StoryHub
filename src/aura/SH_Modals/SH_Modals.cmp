@@ -1,9 +1,9 @@
 <aura:component description="SH_Modals" controller="SH_ModalsController" access="global">
     <c:SH_Spinner aura:id="spinner"/>
 
-    <aura:attribute name="isEditModalOpen" type="Boolean" default="{!false}"/>
-    <aura:attribute name="isDeleteModalOpen" type="Boolean" default="{!false}"/>
-    <aura:attribute name="isAddModalOpen" type="Boolean" default="{!false}"/>
+    <aura:attribute name="isEditModalOpen" type="Boolean" default="false"/>
+    <aura:attribute name="isDeleteModalOpen" type="Boolean" default="false"/>
+    <aura:attribute name="isAddModalOpen" type="Boolean" default="false"/>
     <aura:attribute name="objectListToDisplay" type="Object[]"/>
     <aura:attribute name="objectType" type="String"/>
     <aura:attribute name="objectID" type="String"/>

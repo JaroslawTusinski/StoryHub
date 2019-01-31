@@ -4,7 +4,7 @@
     <aura:attribute name="map" type="Object"/>
     <aura:attribute name="currentMarkers" type="Object[]"/>
 
-    <ltng:require styles="/resource/leaflet/leaflet.css" scripts="/resource/leaflet/leaflet.js" afterScriptsLoaded="{!c.jsLoaded}" />
+    <ltng:require styles="{!$Resource.leaflet + '/leaflet.css'}" scripts="{!$Resource.leaflet + '/leaflet.js'}" afterScriptsLoaded="{!c.jsLoaded}" />
 
     <aura:handler event="c:SH_Branch_AccountsIDsToDisplay" action="{!c.handleSendSelectedBranchIDEvent}"/>
     <aura:handler event="c:SH_SendInfoAfterAccountUpsertEvent" action="{!c.handleSendInfoAfterAccountUpsertEvent}"/>

@@ -5,8 +5,8 @@
     <aura:handler event="c:SH_Branch_AccountsIDsToDisplay" action="{!c.handleSendSelectedBranchIDEvent}"/>
     <aura:handler event="c:SH_SendInfoAfterAccountUpsertEvent" action="{!c.handleSendInfoAfterAccountUpsertEvent}"/>
 
-    <aura:attribute name="isResultBodyNotEmpty" type="Boolean" default="{!false}"/>
-    <aura:attribute name="userPermissionToDeleteButton" type="Boolean" default="{!false}"/>
+    <aura:attribute name="isResultBodyNotEmpty" type="Boolean" default="false"/>
+    <aura:attribute name="userPermissionToDeleteButton" type="Boolean" default="false"/>
     <aura:attribute name="accountDetails" type="Object[]"/>
     <aura:attribute name="employees" type="Object[]"/>
     <aura:attribute name="accountID" type="String"/>
