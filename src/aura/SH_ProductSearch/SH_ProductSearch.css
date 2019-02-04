@@ -1,0 +1,191 @@
+.THIS {
+}
+
+
+
+.THIS .show-more {
+    cursor: pointer;
+    transition: all .5s ease-in-out;
+        width: 3rem;
+        height: 3rem;
+        background-color: white;
+        border-right: #bcbcbc solid 1px;
+        display: inline-block;
+        vertical-align: middle;
+}
+.THIS .show-more:hover #chevrond {
+    opacity: 1;
+}
+
+.THIS #chevrond {
+    padding: 0.75rem;
+    opacity: 0.75;
+    transition: all .3s ease-in-out;
+}
+
+.THIS #chevrond .slds-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+
+
+.THIS .search-text {
+    display: inline-block;
+    background-color: white;
+    width: calc(100% - 3rem - 6rem);
+    height: 3rem;
+    vertical-align: middle;
+    position: relative;
+}
+
+.THIS .search-text .slds-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3rem;
+    border: none;
+    border-radius: 0;
+    padding: 0 0.75rem;
+}
+
+.THIS .search-text .slds-form-element__label.slds-no-flex {
+    display: none;
+}
+
+
+
+.THIS .search-btn,
+.THIS .search-alt-btn {
+    display: inline-block;
+    width: 6rem;
+    height: 3rem;
+    background-color: white;
+    vertical-align: middle;
+    transition: all .5s ease-in-out;
+}
+.THIS #btn-section .search-btn button {
+    padding: 0 1.25rem;
+}
+.THIS #btn-section .search-btn {
+    margin-left: 0.75rem;
+}
+.THIS .search-btn:hover button {
+    background-color: rgba(167, 0, 3, 1);
+}
+
+.THIS .search-btn button {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(167, 0, 3, .75);
+    color: white;
+    border: none;
+    border-radius: 0;
+    transition: all .5s ease-in-out;
+        font-size: 1.1rem;
+}
+
+.THIS .search-alt-btn button {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(167, 0, 3, 0);
+    color: rgba(167, 0, 3, .75);
+    border: 1px solid rgba(167, 0, 3, .75);
+    border-radius: 0;
+    transition: all .5s ease-in-out;
+        font-size: 1.1rem;
+        font-weight: 600;
+}
+.THIS .search-alt-btn:hover button {
+    background-color: rgba(167, 0, 3, 0.125);
+    color: rgba(167, 0, 3, 1);
+    border: 1px solid rgba(167, 0, 3, 1);
+}
+
+.THIS .search-btn .slds-button[disabled],
+.THIS .search-btn .slds-button:disabled {
+    background-color: rgba(167, 0, 3, .25);
+}
+
+
+
+.THIS #wrapper {
+    transition: all .3s ease-in-out;
+    height: 0;
+    overflow: hidden;
+    margin: 0 -5px;
+    padding: 0 5px;
+}
+
+.THIS #more-search-credentials {
+    width: 100%;
+    background-color: white;
+    border-top: #bcbcbc solid 1px;
+    padding: 0.75rem;
+    -webkit-box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.5);
+    -moz-box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.5);
+    box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.5);
+}
+
+.THIS #more-search-credentials input {
+    border: #dcdcdc solid 1px;
+    border-radius: 0;
+}
+
+.THIS #more-search-credentials label {
+    padding: 0;
+}
+
+.THIS #credentials {
+    width: calc(50% - (0.75rem / 2));
+    margin-right: 0.75rem;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.THIS #credentials .slds-col input {
+    border: #dcdcdc solid 1px;
+    border-radius: 0;
+    padding-right: 0;
+}
+
+.THIS #more-credentials {
+    width: calc(50% - (0.75rem / 2));
+    padding-left: .75rem;
+    display: inline-block;
+    vertical-align: middle;
+    border-left: #dcdcdc solid 1px;
+}
+
+.THIS #book-credentials,
+.THIS #movie-credentials {
+    width: 100%;
+}
+
+
+
+.THIS .display-none {
+    display: none;
+}
+
+.THIS .wrap-show {
+    height: 345px!important;
+}
+
+.THIS .wrap-rotate {
+    transform: rotate(-180deg) !important;
+}
+
+
+
+
+.THIS #btn-section {
+    width: 100%;
+    border-top: #dcdcdc solid 1px;
+}
+
+
+.THIS .slds-listbox.slds-listbox_vertical.slds-dropdown.slds-dropdown_fluid.slds-dropdown_length-with-icon-10.slds-dropdown_left {
+    max-height: 7rem;
+}

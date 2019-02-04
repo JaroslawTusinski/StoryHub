@@ -1,0 +1,102 @@
+<aura:component description="SH_ProductSearch" controller="SH_ProductSearchController" implements="forceCommunity:searchInterface">
+    <aura:attribute name="searchBook" type="Boolean" default="true"/>
+    <aura:attribute name="searchMovie" type="Boolean" default="true"/>
+    <aura:attribute name="searchText" type="String" default=""/>
+    <aura:attribute name="searchGenre" type="String" default=""/>
+    <aura:attribute name="searchType" type="String" default=""/>
+    <aura:attribute name="searchConditions" type="String" default=""/>
+    <aura:attribute name="searchAuthor" type="String" default=""/>
+    <aura:attribute name="searchDate" type="Date"/>
+    <aura:attribute name="searchMinPrice" type="Double"/>
+    <aura:attribute name="searchMaxPrice" type="Double"/>
+
+    <aura:attribute name="allBookGenre" type="List"/>
+    <aura:attribute name="allMovieGenre" type="List"/>
+    <aura:attribute name="allBookType" type="List"/>
+    <aura:attribute name="allMovieType" type="List"/>
+    <aura:attribute name="allConditions" type="List"/>
+
+    <aura:attribute name="searchValid" type="Boolean" default="true"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+
+    <div class="slds-form-element slds-lookup"><!-- data-select="single" -->
+        <div class="slds-form-element__control">
+            <div class="slds-input-has-icon slds-input-has-icon--right">
+                <div class="show-more">
+                    <div id="chevrond" class="hide-c" onclick="{!c.slideMoreCredentials}">
+                        <lightning:icon iconName="utility:chevrondown"/>
+                    </div>
+                </div>
+
+                <div class="search-text">
+                    <lightning:input label="" placeholder="{!$Label.c.Search_placecholder}" value="{!v.searchText}" />
+                </div>
+
+                <div class="search-btn">
+                    <lightning:button label="{!$Label.c.Search_Button}" onclick="{! c.handleSearch }" disabled="{! !v.searchValid}"/>
+                </div>
+
+                <div id="wrapper" class="">
+                    <div id="more-search-credentials">
+                        <div id="credentials">
+                            <lightning:input type="checkbox" class="slds-m-bottom--x-small" label="{!$Label.c.Book}" disabled="{! !v.searchMovie}" value="{!v.searchBook}" checked="{!v.searchBook}" onchange="{!c.categoryChange}"/>
+
+                            <lightning:input type="checkbox" class="slds-m-bottom--x-small" label="{!$Label.c.Movie}" disabled="{! !v.searchBook}" value="{!v.searchMovie}" checked="{!v.searchMovie}" onchange="{!c.categoryChange}"/>
+
+                            <lightning:combobox label="{!$Label.c.Product_condition}" options="{!v.allConditions}" value="{!v.searchConditions}" class="slds-m-bottom--x-small"/>
+
+                            <div class="slds-grid slds-wrap">
+                                <lightning:input type="number" step="0.01" min="0" label="{!$Label.c.Min_price}" placeholder="{!$Label.c.Min_price}" onchange="{!c.checkMinAndMax}" value="{!v.searchMinPrice}" class="slds-col slds-size_1-of-2 slds-p-right--x-small"/>
+
+                                <lightning:input type="number" step="0.01" min="{!v.searchMinPrice}" label="{!$Label.c.Max_price}" placeholder="{!$Label.c.Max_price}" onchange="{!c.checkMinAndMax}" value="{!v.searchMaxPrice}" class="slds-col slds-size_1-of-2 slds-p-left--x-small"/>
+                            </div>
+                        </div>
+
+                        <div id="more-credentials">
+                            <aura:if isTrue="{! and(v.searchBook, !v.searchMovie)}">
+                                <div id="book-credentials">
+                                    <lightning:combobox label="{!$Label.c.Book_genre}" options="{!v.allBookGenre}" value="{!v.searchGenre}" class="slds-m-bottom--x-small"/>
+
+                                    <lightning:combobox label="{!$Label.c.Book_Type}" options="{!v.allBookType}" value="{!v.searchType}" class="slds-m-bottom--x-small"/>
+
+                                    <lightning:input label="{!$Label.c.Author}" placeholder="{!$Label.c.Author}" value="{!v.searchAuthor}" class="slds-m-bottom--x-small"/>
+                                </div>
+                            </aura:if>
+
+                            <aura:if isTrue="{! and(!v.searchBook, v.searchMovie)}">
+                                <div id="movie-credentials">
+                                    <lightning:combobox label="{!$Label.c.Movie_genre}" options="{!v.allMovieGenre}" value="{!v.searchGenre}" class="slds-m-bottom--x-small"/>
+
+                                    <lightning:combobox label="{!$Label.c.Movie_Type}" options="{!v.allMovieType}" value="{!v.searchType}" class="slds-m-bottom--x-small"/>
+
+                                    <lightning:input label="{!$Label.c.Director}" placeholder="{!$Label.c.Director}" value="{!v.searchAuthor}" class="slds-m-bottom--x-small"/>
+                                </div>
+                            </aura:if>
+
+                            <lightning:input type="date" formatter="" label="{!$Label.c.Release_Date}" value="{!v.searchDate}" placeholder="dd-Mon-yyyy"/>
+                        </div>
+
+                        <div id="btn-section" class="slds-m-top--small slds-p-top--small">
+                            <div class="search-alt-btn">
+                                <lightning:button label="{!$Label.c.Clear_Button}" onclick="{!c.slideClearCredentials}"/>
+                            </div>
+
+                            <div style="float: right">
+                                <div class="search-alt-btn">
+                                    <lightning:button label="{!$Label.c.Close_Button}"  onclick="{!c.slideMoreCredentials}"/>
+                                </div>
+
+                                <div class="search-btn">
+                                    <lightning:button label="{!$Label.c.Search_Button}" onclick="{! c.handleSearch }" disabled="{! !v.searchValid}"/>
+                                </div>
+                            </div>
+
+                            <div style="clear: both"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</aura:component>
