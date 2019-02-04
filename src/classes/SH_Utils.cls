@@ -42,6 +42,20 @@ public with sharing class SH_Utils {
         return mapFieldsApiNameLabel;
     }
 
+    public static List<String> getAllOptionsFromObjectPickList(SObject objObject, String field) {
+        List <String> allOptions = new list<String>();
+        Schema.sObjectType objType = objObject.getSObjectType();
+        Schema.DescribeSObjectResult objDescribe = objType.getDescribe();
+        map <String, Schema.SObjectField> fieldMap = objDescribe.fields.getMap();
+        list <Schema.PicklistEntry> values = fieldMap.get(field).getDescribe().getPickListValues();
+
+        for (Schema.PicklistEntry val: values) {
+            allOptions.add(val.getValue());
+        }
+
+        return allOptions;
+    }
+
     public class QueryBuilder {
         private List<String> qSelect;
         private List<String> qSort;

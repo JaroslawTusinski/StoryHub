@@ -1,0 +1,8 @@
+<aura:component description="SH_ProductSearchResultList" implements="forceCommunity:availableForAllPageTypes" access="global">
+    <aura:attribute type="list" name="Products" />
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    <h1>Search Results</h1>
+    <aura:iteration items="{!v.Products}" var="product">
+        <c:SH_ProductSearchResultItem product="{!product}"/>
+    </aura:iteration>
+</aura:component>

@@ -1,0 +1,30 @@
+<aura:component description="SH_ProductSearchResultItem" implements="force:hasRecordId" access="global">
+    <aura:attribute name="product" type="Object"/>
+    <aura:attribute name="simpleRecord" type="Object"/>
+    <aura:attribute name="recordError" type="String"/>
+
+    <force:recordData aura:id="recordLoader"
+                      recordId="{!v.product.ind}"
+                      layoutType="COMPACT"
+                      targetRecord="{!v.product.ind}"
+                      targetFields="{!v.simpleRecord}"
+                      targetError="{!v.recordError}" />
+
+    <div class="slds-page-header" role="banner">
+        <!--<div style="{! 'background-image: url(' + like.imgSrc + ');'}">-->
+        <div style="{!'width: 15rem; height: 15rem; background-image: url(' + v.product.imgUrls[0] +');'}" class="background">
+
+        </div>
+        <p class="slds-text-heading--label" style="font-size: 20px">Title: {!v.simpleRecord.Name}</p>
+        <p class="slds-text-heading--label">Price: {!v.product.price} $</p>
+        <h1 class="slds-page-header__title slds-m-right--small  slds-truncate slds-align-left"><a href="{! $Site.siteUrlPrefix + '/detail/' + v.simpleRecord.Id}">Go to details</a></h1>
+    </div>
+
+    <aura:if isTrue="{!not(empty(v.recordError))}">
+        <div class="recordError">
+            <ui:message title="Error" severity="error" closable="true">
+                    {!v.recordError}
+            </ui:message>
+        </div>
+    </aura:if>
+</aura:component>
