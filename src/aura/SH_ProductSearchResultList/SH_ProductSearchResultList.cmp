@@ -11,105 +11,129 @@
 
     <aura:handler name="init" value="{!this}" action="{!c.init}"/>
 
-    <aura:if isTrue="{! !v.isNoResults}">
-        <aura:if isTrue="{!v.isProductSelected}">
-            <div class="slds-page-header slds-m-bottom--small" role="banner" style="position: relative;">
-                <p class="slds-text-heading--label" style="font-size: 1.33rem; text-align: center;">{!v.product.product.Name}</p><br/>
+    <div class="slds-grid slds-wrap">
+        <div class="slds-col slds-size_1-of-5">
+            <div class="slds-page-header slds-m-bottom--small" role="banner">
 
-                <div class="slds-grid slds-wrap">
-                    <aura:if isTrue="{!not(empty(v.product.imgUrls))}">
-                        <div class="slds-col slds-size_3-of-5 carousel" style="margin-bottom: 2rem;">
-                            <lightning:carousel disableAutoRefresh="false" disableAutoScroll="false">
-                                <aura:iteration items="{!v.product.imgUrls}" var="image">
-                                    <lightning:carouselImage src="{!image}"/>
-                                </aura:iteration>
-                            </lightning:carousel>
-                        </div>
-
-                        <div class="slds-col slds-size_2-of-5 slds-p-left--small">
-                            <div class="slds-text-heading--label" style="position: relative; height: 35rem;">
-                                <aura:if isTrue="{!not(empty(v.product.product.Author__c))}">
-                                    <p class="">By:&nbsp;&nbsp;{!v.product.product.Author__c}</p><br/>
-                                </aura:if>
-
-                                <aura:if isTrue="{!not(empty(v.product.product.ReleaseDate__c))}">
-                                    <p class="">{!$Label.c.Release_Date}:&nbsp;&nbsp;{!v.product.product.ReleaseDate__c}</p><br/>
-                                </aura:if>
-
-                                <aura:if isTrue="{!not(empty(v.product.product.Family))}">
-                                    <p class="">{!$Label.c.Product_condition}:&nbsp;&nbsp;{!v.product.product.Family}</p><br/>
-                                </aura:if>
-
-                                <span class="price">
-                                    {!v.product.price} $
-                                </span>
-
-                                <lightning:combobox label="{!equals(v.product.product.RecordType.Name, 'Book') ? $Label.c.Book_Type : $Label.c.Movie_Type}" options="{!v.productType}" value="{!v.selectedProductType}"/>
-
-                                <lightning:button label="{!$Label.c.Add_to_cart}" onclick="" class="btn-add"/>
-                            </div>
-                        </div>
-                    </aura:if>
-
-                    <aura:if isTrue="{!empty(v.product.imgUrls)}">
-                        <div class="slds-col slds-size_1-of-2">
-                            <div class="slds-text-heading--label slds-p-top--small">
-                                <aura:if isTrue="{!not(empty(v.product.product.Author__c))}">
-                                    <p class="">By:&nbsp;&nbsp;{!v.product.product.Author__c}</p><br/>
-                                </aura:if>
-
-                                <aura:if isTrue="{!not(empty(v.product.product.ReleaseDate__c))}">
-                                    <p class="">{!$Label.c.Release_Date}:&nbsp;&nbsp;{!v.product.product.ReleaseDate__c}</p><br/>
-                                </aura:if>
-
-                                <aura:if isTrue="{!not(empty(v.product.product.Family))}">
-                                    <p class="">{!$Label.c.Product_condition}:&nbsp;&nbsp;{!v.product.product.Family}</p><br/>
-                                </aura:if>
-                            </div>
-                        </div>
-
-                        <div class="slds-col slds-size_1-of-2 slds-p-left--small">
-                            <div class="slds-text-heading--label">
-                                <span class="price">
-                                    {!v.product.price} $
-                                </span>
-
-                                <lightning:combobox label="{!equals(v.product.product.RecordType.Name, 'Book') ? $Label.c.Book_Type : $Label.c.Movie_Type}" options="{!v.productType}" value="{!v.selectedProductType}"/>
-                            </div>
-
-                            <lightning:button label="{!$Label.c.Add_to_cart}" onclick="" class="btn-add-no-photo slds-m-top--medium slds-m-bottom--x-large"/>
-                        </div>
-                    </aura:if>
-                </div>
-
-                <aura:if isTrue="{!not(empty(v.product.product.Description))}">
-                    <p class="slds-text-heading--label">{!$Label.c.Description}</p>
-
-                    <p>{!v.product.product.Description}</p>
-                </aura:if>
-
-                <lightning:button class="back-to-result" onclick="{!c.backToResults}">
-                    <lightning:icon iconName="utility:back"/>&nbsp;&nbsp;{!$Label.c.Back_to_results}
-                </lightning:button>
             </div>
-
-            <aura:set attribute="else">
-                <aura:iteration items="{!v.Products}" var="product" indexVar="i">
-                    <a onclick="{!c.selectProduct}" data-index="{!i}" style="text-decoration: none;">
-                        <c:SH_ProductSearchResultItem recordId="{!product.ind}" product="{!product}"/>
-                    </a>
-                </aura:iteration>
-            </aura:set>
-        </aura:if>
-    </aura:if>
-
-    <aura:if isTrue="{!v.isNoResults}">
-        <div class="slds-page-header slds-m-bottom--small" role="banner">
-            <p class="slds-text-heading--label" style="font-size: 1.33rem; text-align: center;">
-                {!$Label.c.No_search_results}
-            </p>
         </div>
-    </aura:if>
+
+        <div class="slds-col slds-size_3-of-5 slds-p-horizontal--small">
+            <aura:if isTrue="{! !v.isNoResults}">
+                <aura:if isTrue="{!v.isProductSelected}">
+                    <div class="slds-page-header slds-m-bottom--small" role="banner" style="position: relative;">
+                        <p class="slds-text-heading--label" style="font-size: 1.33rem; text-align: center;">{!v.product.product.Name}</p><br/>
+
+                        <div class="slds-grid slds-wrap">
+                            <aura:if isTrue="{!not(empty(v.product.imgUrls))}">
+                                <div class="slds-col slds-size_3-of-5 carousel" style="margin-bottom: 2rem;">
+                                    <lightning:carousel disableAutoRefresh="false" disableAutoScroll="false">
+                                        <aura:iteration items="{!v.product.imgUrls}" var="image">
+                                            <lightning:carouselImage src="{!image}"/>
+                                        </aura:iteration>
+                                    </lightning:carousel>
+                                </div>
+
+                                <div class="slds-col slds-size_2-of-5 slds-p-left--small">
+                                    <div class="slds-text-heading--label" style="position: relative; height: 35rem;">
+                                        <aura:if isTrue="{!not(empty(v.product.product.Author__c))}">
+                                            <p class="">By:&nbsp;&nbsp;{!v.product.product.Author__c}</p><br/>
+                                        </aura:if>
+
+                                        <aura:if isTrue="{!not(empty(v.product.product.ReleaseDate__c))}">
+                                            <p class="">{!$Label.c.Release_Date}:&nbsp;&nbsp;{!v.product.product.ReleaseDate__c}</p><br/>
+                                        </aura:if>
+
+                                        <aura:if isTrue="{!not(empty(v.product.product.Family))}">
+                                            <p class="">{!$Label.c.Product_condition}:&nbsp;&nbsp;{!v.product.product.Family}</p><br/>
+                                        </aura:if>
+
+                                        <span class="price">
+                                            {!v.product.price} $
+                                        </span>
+
+                                        <lightning:combobox label="{!equals(v.product.product.RecordType.Name, 'Book') ? $Label.c.Book_Type : $Label.c.Movie_Type}" options="{!v.productType}" value="{!v.selectedProductType}"/>
+
+                                        <lightning:button label="{!$Label.c.Add_to_cart}" onclick="" class="btn-add"/>
+                                    </div>
+                                </div>
+                            </aura:if>
+
+                            <aura:if isTrue="{!empty(v.product.imgUrls)}">
+                                <div class="slds-col slds-size_1-of-2">
+                                    <div class="slds-text-heading--label slds-p-top--small">
+                                        <aura:if isTrue="{!not(empty(v.product.product.Author__c))}">
+                                            <p class="">By:&nbsp;&nbsp;{!v.product.product.Author__c}</p><br/>
+                                        </aura:if>
+
+                                        <aura:if isTrue="{!not(empty(v.product.product.ReleaseDate__c))}">
+                                            <p class="">{!$Label.c.Release_Date}:&nbsp;&nbsp;{!v.product.product.ReleaseDate__c}</p><br/>
+                                        </aura:if>
+
+                                        <aura:if isTrue="{!not(empty(v.product.product.Family))}">
+                                            <p class="">{!$Label.c.Product_condition}:&nbsp;&nbsp;{!v.product.product.Family}</p><br/>
+                                        </aura:if>
+                                    </div>
+                                </div>
+
+                                <div class="slds-col slds-size_1-of-2 slds-p-left--small">
+                                    <div class="slds-text-heading--label">
+                                        <span class="price">
+                                            {!v.product.price} $
+                                        </span>
+
+                                        <lightning:combobox label="{!equals(v.product.product.RecordType.Name, 'Book') ? $Label.c.Book_Type : $Label.c.Movie_Type}" options="{!v.productType}" value="{!v.selectedProductType}"/>
+                                    </div>
+
+                                    <lightning:button label="{!$Label.c.Add_to_cart}" onclick="" class="btn-add-no-photo slds-m-top--medium slds-m-bottom--x-large"/>
+                                </div>
+                            </aura:if>
+                        </div>
+
+                        <aura:if isTrue="{!not(empty(v.product.product.Description))}">
+                            <p class="slds-text-heading--label">{!$Label.c.Description}</p>
+
+                            <p>{!v.product.product.Description}</p>
+                        </aura:if>
+                    </div>
+
+                    <aura:set attribute="else">
+                        <aura:iteration items="{!v.Products}" var="product" indexVar="i">
+                            <a onclick="{!c.selectProduct}" data-index="{!i}" style="text-decoration: none;">
+                                <c:SH_ProductSearchResultItem recordId="{!product.ind}" product="{!product}"/>
+                            </a>
+                        </aura:iteration>
+                    </aura:set>
+                </aura:if>
+            </aura:if>
+
+            <aura:if isTrue="{!v.isNoResults}">
+                <div class="slds-page-header slds-m-bottom--small" role="banner">
+                    <p class="slds-text-heading--label" style="font-size: 1.33rem; text-align: center;">
+                        {!$Label.c.No_search_results}
+                    </p>
+                </div>
+            </aura:if>
+        </div>
+
+        <div class="slds-col slds-size_1-of-5">
+            <aura:if isTrue="{!v.isProductSelected}">
+                <lightning:button class="back-to-result" onclick="{!c.backToResults}">
+                    <lightning:icon iconName="utility:back" class="whiteFill"/>&nbsp;&nbsp;{!$Label.c.Back_to_results}
+                </lightning:button>
+
+                <div class="slds-page-header slds-m-vertical--small" role="banner">
+                    <c:SH_StarRating productID="{!v.product.ind}"/>
+                </div>
+            </aura:if>
+
+            <aura:if isTrue="{!not(v.isProductSelected)}">
+                <div class="slds-page-header slds-m-bottom--small" role="banner">
+
+                </div>
+            </aura:if>
+        </div>
+    </div>
 
     <aura:if isTrue="{!not(empty(v.recordError))}">
         <div class="recordError">

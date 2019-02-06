@@ -19,11 +19,27 @@
             </div>
 
             <div class="slds-col slds-size_3-of-4 slds-p-left--small relative">
-                <p class="slds-text-heading--label" style="font-size: 1.33rem">Title: {!v.simpleRecord.Name}</p>
+                <p class="slds-text-heading--label" style="font-size: 1.33rem; max-height: 3.1rem; overflow: hidden;">Title: {!v.simpleRecord.Name}</p>
 
                 <p class="slds-text-heading--label price">{!v.product.price} $</p>
 
-                <p class="slds-text-heading--label bottom">{!$Label.c.Product_condition}:&nbsp;&nbsp;&nbsp;{!v.product.product.Family}</p>
+                <div class="slds-text-heading--label bottom">
+                    <aura:if isTrue="{!v.product.rate ge 10}">
+                        <div title="{!v.product.rate / 10 + ' / 10'}" style="margin-bottom: -1.25rem;">
+                            <div id="r10" class="{!v.product.rate ge 10 ? 'left-part star-point' : 'left-part'}"></div>
+                            <div id="r20" class="{!v.product.rate ge 20 ? 'right-part star-point' : 'right-part'}"></div>
+                            <div id="r30" class="{!v.product.rate ge 30 ? 'left-part star-point' : 'left-part'}"></div>
+                            <div id="r40" class="{!v.product.rate ge 40 ? 'right-part star-point' : 'right-part'}"></div>
+                            <div id="r50" class="{!v.product.rate ge 50 ? 'left-part star-point' : 'left-part'}"></div>
+                            <div id="r60" class="{!v.product.rate ge 60 ? 'right-part star-point' : 'right-part'}"></div>
+                            <div id="r70" class="{!v.product.rate ge 70 ? 'left-part star-point' : 'left-part'}"></div>
+                            <div id="r80" class="{!v.product.rate ge 80 ? 'right-part star-point' : 'right-part'}"></div>
+                            <div id="r90" class="{!v.product.rate ge 90 ? 'left-part star-point' : 'left-part'}"></div>
+                            <div id="r100" class="{!v.product.rate ge 100 ? 'right-part star-point' : 'right-part'}"></div>
+                        </div><br/>
+                    </aura:if>
+                    {!$Label.c.Product_condition}:&nbsp;&nbsp;{!v.product.product.Family}
+                </div>
             </div>
         </div>
     </div>

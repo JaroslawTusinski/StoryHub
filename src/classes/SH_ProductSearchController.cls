@@ -2,6 +2,7 @@ public with sharing class SH_ProductSearchController {
     @AuraEnabled
     public static String searchForProducts(String jsonCredentialsObject) {
         List<String> ids = new List<String>();
+        List<Decimal> rates = new List<Decimal>();
         List<List<String>> urls = new List<List<String>>();
         List<Product2> results = prepareProductList(jsonCredentialsObject);
 
@@ -24,6 +25,8 @@ public with sharing class SH_ProductSearchController {
             List<String> url = new List<String>();
             List<ContentDocumentLink> imgs = [SELECT ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId = :ind];
 
+            rates.add((Decimal)([SELECT AVG(Rating__c) averageRating FROM MovieOpinion__c WHERE MovieID__c LIKE :ind].get(0).get('averageRating')));
+
             if (!imgs.isEmpty()) {
                 for(ContentDocumentLink img : imgs){
                     List<ContentDistribution> publicUrl = [SELECT ContentDownloadUrl FROM ContentDistribution WHERE ContentDocumentId = :(img.ContentDocumentId)];
@@ -44,7 +47,7 @@ public with sharing class SH_ProductSearchController {
         List<PricebookEntry> prices = Database.query(queryBuilder.buildQuery());
 
         for (Integer i = 0; i < ids.size(); i++) {
-            products.add(new Products(ids[i], results[i], prices[i].UnitPrice, urls[i]));
+            products.add(new Products(ids[i], rates[i], results[i], prices[i].UnitPrice, urls[i]));
         }
 
         return JSON.serialize(products);
@@ -128,12 +131,14 @@ public with sharing class SH_ProductSearchController {
 
     public class Products {
         public String ind;
+        public Decimal rate;
         public Product2 product;
         public Decimal price;
         public List<String> imgUrls;
 
-        public Products(String ind, Product2 product, Decimal price, List<String> imgUrls){
+        public Products(String ind, Decimal rate, Product2 product, Decimal price, List<String> imgUrls){
             this.ind = ind;
+            this.rate = rate;
             this.product = product;
             this.price = price;
             this.imgUrls = imgUrls;
