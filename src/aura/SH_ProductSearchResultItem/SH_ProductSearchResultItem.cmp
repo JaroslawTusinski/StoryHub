@@ -1,30 +1,30 @@
 <aura:component description="SH_ProductSearchResultItem" implements="force:hasRecordId" access="global">
-    <aura:attribute name="product" type="Object"/>
+    <aura:attribute name="product" type="Object"/><!-- TODO dociągać z bazy a nie pobierać -->
+    <aura:attribute name="record" type="Object"/>
     <aura:attribute name="simpleRecord" type="Object"/>
     <aura:attribute name="recordError" type="String"/>
 
     <force:recordData aura:id="recordLoader"
-                      recordId="{!v.product.ind}"
+                      recordId="{!v.recordId}"
                       layoutType="COMPACT"
-                      targetRecord="{!v.product.ind}"
+                      targetRecord="{!v.record}"
                       targetFields="{!v.simpleRecord}"
                       targetError="{!v.recordError}" />
 
-    <div class="slds-page-header" role="banner">
-        <!--<div style="{! 'background-image: url(' + like.imgSrc + ');'}">-->
-        <div style="{!'width: 15rem; height: 15rem; background-image: url(' + v.product.imgUrls[0] +');'}" class="background">
 
+    <div class="slds-page-header page-header-hover slds-m-bottom--small" role="banner">
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size_1-of-4">
+                <div style="{!'width: 100%; height: 11rem; background-image: url(' + v.product.imgUrls[0] +');'}" class="background"></div>
+            </div>
+
+            <div class="slds-col slds-size_3-of-4 slds-p-left--small relative">
+                <p class="slds-text-heading--label" style="font-size: 1.33rem">Title: {!v.simpleRecord.Name}</p>
+
+                <p class="slds-text-heading--label price">{!v.product.price} $</p>
+
+                <p class="slds-text-heading--label bottom">{!$Label.c.Product_condition}:&nbsp;&nbsp;&nbsp;{!v.product.product.Family}</p>
+            </div>
         </div>
-        <p class="slds-text-heading--label" style="font-size: 20px">Title: {!v.simpleRecord.Name}</p>
-        <p class="slds-text-heading--label">Price: {!v.product.price} $</p>
-        <h1 class="slds-page-header__title slds-m-right--small  slds-truncate slds-align-left"><a href="{! $Site.siteUrlPrefix + '/detail/' + v.simpleRecord.Id}">Go to details</a></h1>
     </div>
-
-    <aura:if isTrue="{!not(empty(v.recordError))}">
-        <div class="recordError">
-            <ui:message title="Error" severity="error" closable="true">
-                    {!v.recordError}
-            </ui:message>
-        </div>
-    </aura:if>
 </aura:component>

@@ -1,5 +1,37 @@
 .THIS .background {
+    background-color: white;
     background-position: center;
     background-repeat: no-repeat;
     background-size: 100% auto;
+    border: 1px solid #ddd;
+}
+
+.THIS .relative {
+    position: relative;
+    height: 11rem;
+}
+
+.THIS .bottom {
+    position: absolute;
+    bottom: 0;
+}
+
+.THIS .price {
+    font-weight: bold;
+    font-size: 3.5rem;
+}
+
+.THIS.page-header-hover {
+    transition: all .25s ease-in-out;
+    -webkit-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
+    box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
+    border: none;
+}
+
+.THIS.page-header-hover:hover {
+    background-color: rgba(167, 0, 3, 0.125);
+    -webkit-box-shadow: 0px 5px 10px 0px rgba(167, 0, 3, .85);
+    -moz-box-shadow: 0px 5px 10px 0px rgba(167, 0, 3, .85);
+    box-shadow: 0px 5px 10px 0px rgba(167, 0, 3, .85);
 }

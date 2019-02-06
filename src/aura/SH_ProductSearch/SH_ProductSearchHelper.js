@@ -27,6 +27,11 @@
     generatePickListObject : function(list) {
         let listOfObjectForPickList = [];
 
+        listOfObjectForPickList.push({
+            value: 'All',
+            label: 'All'
+        });
+
         list.forEach(function(item) {
             listOfObjectForPickList.push({
                 value: item,
@@ -41,13 +46,10 @@
         let min = component.get('v.searchMinPrice');
         let max = component.get('v.searchMaxPrice');
 
-        if ((!min || !max ) && min != 0 && max != 0) return null;
-
         if (typeof min === 'string') min = parseFloat(min);
-
         if (typeof max === 'string') max = parseFloat(max);
 
-        if (min > max) {
+        if ((typeof min === 'number' && min < 0) || (typeof max === 'number' && max < 0) || (typeof min === 'number' && typeof max === 'number' && min > max)) {
              component.set('v.searchValid', false);
              return null;
         }
@@ -80,9 +82,9 @@
         let searchText = component.get('v.searchText');
         let searchBook = component.get('v.searchBook');
         let searchMovie = component.get('v.searchMovie');
-        let searchGenre = component.get('v.searchGenre');
-        let searchType = component.get('v.searchType');
-        let searchConditions = component.get('v.searchConditions');
+        let searchGenre = component.get('v.searchGenre') === "All" ? undefined : component.get('v.searchGenre');
+        let searchType = component.get('v.searchType') === "All" ? undefined : component.get('v.searchType');
+        let searchConditions = component.get('v.searchConditions') === "All" ? undefined : component.get('v.searchConditions');
         let searchAuthor = component.get('v.searchAuthor');
         let searchDate = $A.localizationService.formatDate(component.get('v.searchDate'), "yyyy-MM-dd");
         let searchMaxPrice = component.get('v.searchMaxPrice') || undefined;
@@ -105,19 +107,23 @@
         action.setParam('jsonCredentialsObject', JSON.stringify(credentials));
 
         action.setCallback(this, function(response) {
-            var state = response.getState();
+            let state = response.getState();
 
             if (state === 'SUCCESS') {
-                var products = response.getReturnValue();
-
-                console.log(products);
+                let products = response.getReturnValue();
 
                 sessionStorage.setItem('customSearch--recordProducts', products);
 
-                var navEvt = $A.get('e.force:navigateToURL');
+                let navEvt = $A.get('e.force:navigateToURL');
 
                 navEvt.setParams({url: '/results'});
                 navEvt.fire();
+
+                document.getElementById('wrapper').classList.remove('wrap-show');
+                document.getElementById('chevrond').classList.remove('wrap-rotate');
+            }
+            else {
+                // TODO
             }
         });
 

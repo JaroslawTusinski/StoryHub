@@ -1,0 +1,123 @@
+.THIS .carousel .slds-carousel__content {
+    display: none;
+}
+
+.THIS .carousel .slds-carousel__image {
+    height: 35rem;
+    overflow: hidden;
+    background-color: white;
+    display: table-cell;
+    vertical-align: middle;
+    border: none !important;
+    border-radius: 0 !important;
+}
+
+.THIS .carousel a.slds-carousel__panel-action.slds-text-link_reset {
+    cursor: default;
+    border: 1px solid rgba(0, 0, 0, .1);
+    border-radius: 0;
+    padding: 1px;
+}
+
+.THIS .carousel a.slds-carousel__panel-action.slds-text-link_reset img {
+    max-height: 35rem;
+}
+
+.THIS.slds-page-header {
+    transition: all .25s ease-in-out;
+    -webkit-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
+    box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
+    border: none;
+}
+
+.THIS .slds-carousel__indicator-action.slds-is-active,
+.THIS .slds-carousel__indicator-action.slds-is-active:hover,
+.THIS .slds-carousel__indicator-action.slds-is-active:focus {
+    background: rgba(167, 0, 3, 1);
+    border-color: rgba(167, 0, 3, 1);
+    border-radius: 0;
+}
+.THIS .slds-carousel__indicator-action {
+    transition: all .25s ease-in-out;
+    border-radius: 0;
+}
+.THIS .slds-carousel__indicator-action:hover {
+    background: rgba(167, 0, 3, .25);
+    border-color: rgba(167, 0, 3, .25);
+    border-color: rgba(167, 0, 3, .5);
+}
+.THIS .slds-carousel__indicator-action:focus {
+    box-shadow: rgb(0, 112, 210) 0px 0px 3px;
+    background: rgba(167, 0, 3, 1);
+    border-color: rgba(167, 0, 3, 1);
+    outline: 0px;
+}
+
+.THIS .price {
+    font-weight: bold;
+    font-size: 3.5rem;
+}
+
+.THIS [role=combobox] input[readonly] {
+    border-radius: 0;
+}
+
+.THIS .slds-text-heading--label {
+    font-size: 1rem;
+}
+
+.THIS .btn-add,
+.THIS .btn-add-no-photo,
+.THIS button.back-to-result {
+    position: absolute;
+    width: 100%;
+    height: 3rem;
+    background-color: rgba(167, 0, 3, .75);
+    color: white;
+    border: none;
+    border-radius: 0;
+    transition: all .5s ease-in-out;
+    font-size: 1.1rem;
+    bottom: 0;
+}
+.THIS .btn-add:hover,
+.THIS .btn-add-no-photo:hover,
+.THIS button.back-to-result:hover {
+    background-color: rgba(167, 0, 3, 1);
+}
+
+.THIS .btn-add-no-photo {
+    position: inherit;
+}
+
+.THIS .slds-button.slds-button_icon.slds-button_icon-border-filled.slds-button_icon-x-small {
+    border-radius: 0;
+    margin-top: -1rem;
+    transition: all .25s ease-in-out;
+}
+.THIS .slds-button.slds-button_icon.slds-button_icon-border-filled.slds-button_icon-x-small:hover {
+    background: rgba(167, 0, 3, .25);
+    border-color: rgba(167, 0, 3, .25);
+}
+
+.THIS button.back-to-result {
+    position: absolute;
+    top: 0;
+    width: auto;
+    right: -11.5rem;
+    -webkit-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
+    box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
+}
+.THIS button.back-to-result:hover {
+    right: -11rem;
+}
+
+.THIS .slds-icon-text-default {
+    fill: rgb(255, 255, 255) !important;
+}
+
+.THIS .slds-icon.slds-icon-text-default {
+    width: 1.25rem !important;
+}

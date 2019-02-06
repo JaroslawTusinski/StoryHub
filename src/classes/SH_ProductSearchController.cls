@@ -4,6 +4,9 @@ public with sharing class SH_ProductSearchController {
         List<String> ids = new List<String>();
         List<List<String>> urls = new List<List<String>>();
         List<Product2> results = prepareProductList(jsonCredentialsObject);
+
+        if (results.isEmpty()) return null;
+
         List<Products> products = new List<Products>();
         SH_Utils.QueryBuilder queryBuilder = new SH_Utils.QueryBuilder();
         SH_Utils.QueryBuilder queryBuilderForImg = new SH_Utils.QueryBuilder();
@@ -41,7 +44,7 @@ public with sharing class SH_ProductSearchController {
         List<PricebookEntry> prices = Database.query(queryBuilder.buildQuery());
 
         for (Integer i = 0; i < ids.size(); i++) {
-            products.add(new Products(ids[i], prices[i].UnitPrice, urls[i]));
+            products.add(new Products(ids[i], results[i], prices[i].UnitPrice, urls[i]));
         }
 
         return JSON.serialize(products);
@@ -52,6 +55,14 @@ public with sharing class SH_ProductSearchController {
         SH_Utils.QueryBuilder query = new SH_Utils.QueryBuilder();
 
         query.addSelect('Id')
+                .addSelect('Name')
+                .addSelect('Author__c')
+                .addSelect('Description')
+                .addSelect('ReleaseDate__c')
+                .addSelect('BookType__c')
+                .addSelect('MovieType__c')
+                .addSelect('Family')
+                .addSelect('RecordType.Name')
                 .addFrom('Product2')
                 .addWhere('Name LIKE \'%' + credentialsObject.searchText + '%\'').addAND()
                 .addWhere('Family LIKE \'%' + credentialsObject.searchConditions + '%\'').addAND()
@@ -117,11 +128,13 @@ public with sharing class SH_ProductSearchController {
 
     public class Products {
         public String ind;
+        public Product2 product;
         public Decimal price;
         public List<String> imgUrls;
 
-        public Products(String ind, Decimal price, List<String> imgUrls){
+        public Products(String ind, Product2 product, Decimal price, List<String> imgUrls){
             this.ind = ind;
+            this.product = product;
             this.price = price;
             this.imgUrls = imgUrls;
         }
