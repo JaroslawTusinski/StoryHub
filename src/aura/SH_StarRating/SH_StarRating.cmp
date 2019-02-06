@@ -1,0 +1,66 @@
+<aura:component description="SH_StarRating" controller="SH_StarRatingController">
+    <aura:attribute name="productID" type="String"/><!-- movieID -->
+    <aura:attribute name="rate" type="Integer" default="0"/>
+    <aura:attribute name="usersNumber" type="Integer" default="0"/>
+    <aura:attribute name="averageRating" type="Double" default="0"/>
+
+    <aura:handler name="change" value="{!v.productID}" action="{!c.onChange}"/>
+
+    <c:SH_Spinner aura:id="spinner"/>
+
+    <div class="part" data-value="10" onmouseover="{!c.onStarHover}" onmouseout="{!c.onEndHover}" onclick="{!c.saveValue}">
+        <div id="r10" class="{!v.rate ge 10 ? 'left-part star-point' : 'left-part'}"></div>
+    </div>
+
+    <div class="part" data-value="20" onmouseover="{!c.onStarHover}" onmouseout="{!c.onEndHover}" onclick="{!c.saveValue}">
+        <div id="r20" class="{!v.rate ge 20 ? 'right-part star-point' : 'right-part'}"></div>
+    </div>
+
+    <div class="part" data-value="30" onmouseover="{!c.onStarHover}" onmouseout="{!c.onEndHover}" onclick="{!c.saveValue}">
+        <div id="r30" class="{!v.rate ge 30 ? 'left-part star-point' : 'left-part'}"></div>
+    </div>
+
+    <div class="part" data-value="40" onmouseover="{!c.onStarHover}" onmouseout="{!c.onEndHover}" onclick="{!c.saveValue}">
+        <div id="r40" class="{!v.rate ge 40 ? 'right-part star-point' : 'right-part'}"></div>
+    </div>
+
+    <div class="part" data-value="50" onmouseover="{!c.onStarHover}" onmouseout="{!c.onEndHover}" onclick="{!c.saveValue}">
+        <div id="r50" class="{!v.rate ge 50 ? 'left-part star-point' : 'left-part'}"></div>
+    </div>
+
+    <div class="part" data-value="60" onmouseover="{!c.onStarHover}" onmouseout="{!c.onEndHover}" onclick="{!c.saveValue}">
+        <div id="r60" class="{!v.rate ge 60 ? 'right-part star-point' : 'right-part'}"></div>
+    </div>
+
+    <div class="part" data-value="70" onmouseover="{!c.onStarHover}" onmouseout="{!c.onEndHover}" onclick="{!c.saveValue}">
+        <div id="r70" class="{!v.rate ge 70 ? 'left-part star-point' : 'left-part'}"></div>
+    </div>
+
+    <div class="part" data-value="80" onmouseover="{!c.onStarHover}" onmouseout="{!c.onEndHover}" onclick="{!c.saveValue}">
+        <div id="r80" class="{!v.rate ge 80 ? 'right-part star-point' : 'right-part'}"></div>
+    </div>
+
+    <div class="part" data-value="90" onmouseover="{!c.onStarHover}" onmouseout="{!c.onEndHover}" onclick="{!c.saveValue}">
+        <div id="r90" class="{!v.rate ge 90 ? 'left-part star-point' : 'left-part'}"></div>
+    </div>
+
+    <div class="part" data-value="100" onmouseover="{!c.onStarHover}" onmouseout="{!c.onEndHover}" onclick="{!c.saveValue}">
+        <div id="r100" class="{!v.rate ge 100 ? 'right-part star-point' : 'right-part'}"></div>
+    </div>
+
+    <div class="slds-p-bottom--medium">
+        <div class="{!'c100 big p' + v.averageRating}">
+            <span>{!v.averageRating / 20}</span>
+            <div class="slice">
+                <div class="bar"></div>
+                <div class="fill"></div>
+            </div>
+        </div>
+
+        <div style="margin-top: 1.75em;">
+            Your vote:&nbsp;&nbsp;{!v.rate / 20} <br/>
+            Average Rate:&nbsp;&nbsp;{!v.averageRating / 20} <br/>
+            Number  of votes:&nbsp;&nbsp;{!v.usersNumber}
+        </div>
+    </div>
+</aura:component>

@@ -23,7 +23,7 @@
     max-height: 35rem;
 }
 
-.THIS.slds-page-header {
+.THIS .slds-page-header {
     transition: all .25s ease-in-out;
     -webkit-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
     -moz-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
@@ -87,6 +87,7 @@
     background-color: rgba(167, 0, 3, 1);
 }
 
+.THIS button.back-to-result,
 .THIS .btn-add-no-photo {
     position: inherit;
 }
@@ -102,10 +103,7 @@
 }
 
 .THIS button.back-to-result {
-    position: absolute;
-    top: 0;
-    width: auto;
-    right: -11.5rem;
+    width: 100%;
     -webkit-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
     -moz-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
     box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
@@ -114,7 +112,7 @@
     right: -11rem;
 }
 
-.THIS .slds-icon-text-default {
+.THIS .whiteFill .slds-icon-text-default {
     fill: rgb(255, 255, 255) !important;
 }
 
