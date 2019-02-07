@@ -1,0 +1,71 @@
+.THIS .slds-grid.slds-wrap .slds-rich-text-editor__select,
+.THIS .slds-grid.slds-wrap .slds-rich-text-editor__select.slds-size_xx-small,
+.THIS .slds-button-group-list .ql-list,
+.THIS .slds-button-group-list .ql-indent {
+    display: none;
+}
+
+.THIS .slds-nowrap,
+.THIS .slds-nowrap button {
+    border-radius: 0 !important;
+}
+
+.THIS .slds-nowrap button:hover {
+    color: rgba(167, 0, 3, 1);
+}
+
+.THIS .slds-button_icon-border-filled.slds-is-selected {
+    background-color: rgba(167, 0, 3, 1);
+}
+
+.THIS button.comment-btn {
+    transition: all .3s ease-in-out;
+    border-radius: 0 !important;
+    height: 3rem;
+    font-size: 1.1rem;
+    color: rgba(167, 0, 3, .75);
+    min-width: 6rem;
+    font-weight: 600;
+        margin-top: -1px;
+        z-index: 0;
+}
+
+.THIS button.comment-btn:hover {
+    background-color: rgba(167, 0, 3, .25);
+    border: 1px solid rgba(167, 0, 3, .75);
+    color: rgba(167, 0, 3, 1);
+    z-index: 1;
+}
+
+.THIS .slds-button_neutral[disabled],
+.THIS .slds-button_neutral:disabled {
+    background-color: rgba(255, 255, 255, 1) !important;
+    color: rgb(212, 212, 212) !important;
+    border-color: rgb(212, 212, 212) !important;
+}
+
+.THIS .slds-feed__item-comments,
+.THIS .slds-feed__item-comments.b-white {
+    border: 1px solid rgb(212, 212, 212);
+}
+.THIS .slds-feed__item-comments {
+    border-top: none;
+}
+
+.THIS .slds-form-element.lightningInputRichText {
+    z-index: 1;
+}
+
+.THIS .b-white {
+    background-color: white;
+}
+
+.THIS .slds-icon-standard-avatar {
+    background-color: rgba(167, 0, 3, .75);
+    border-radius: 0 !important;
+}
+
+.THIS .slds-feed__item-comments .slds-comment {
+    padding: .75rem;
+    padding-bottom: 0;
+}
