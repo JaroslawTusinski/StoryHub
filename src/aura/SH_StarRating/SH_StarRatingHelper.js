@@ -1,28 +1,28 @@
 ({
     doChange : function(component, event, helper) {
-            let currentProductID = component.get('v.productID');
-            let productRate = component.get('c.getAverageRating');
+        let currentProductID = component.get('v.productID');
+        let productRate = component.get('c.getAverageRating');
 
-            productRate.setParams({
-                'productID' : currentProductID
-            });
+        productRate.setParams({
+            'productID' : currentProductID
+        });
 
-            productRate.setCallback(this, function(response) {
-                let state = response.getState();
+        productRate.setCallback(this, function(response) {
+            let state = response.getState();
 
-                if (state === 'SUCCESS') {
-                    let opinions = response.getReturnValue();
+            if (state === 'SUCCESS') {
+                let opinions = response.getReturnValue();
 
-                    if (opinions) {
-                        helper.setRateAttributes(component, opinions);
-                    }
+                if (opinions) {
+                    helper.setRateAttributes(component, opinions);
                 }
-                else {
-                    // TODO
-                }
-            });
+            }
+            else {
+                // TODO
+            }
+        });
 
-            $A.enqueueAction(productRate);
+        $A.enqueueAction(productRate);
     },
 
     setRateAttributes : function(component, opinions) {

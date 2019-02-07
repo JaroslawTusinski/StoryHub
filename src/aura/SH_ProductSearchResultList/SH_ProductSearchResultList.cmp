@@ -125,6 +125,10 @@
                 <div class="slds-page-header slds-m-vertical--small" role="banner">
                     <c:SH_StarRating productID="{!v.product.ind}"/>
                 </div>
+
+                <div class="slds-page-header slds-m-vertical--small" role="banner">
+                    <c:SH_Commenting productID="{!v.product.ind}"/>
+                </div>
             </aura:if>
 
             <aura:if isTrue="{!not(v.isProductSelected)}">

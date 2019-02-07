@@ -1,0 +1,44 @@
+<aura:component description="SH_Commenting" controller="SH_CommentingController">
+    <aura:attribute name="isCommentsExist" type="Boolean"/>
+    <aura:attribute name="productID" type="String"/>
+    <aura:attribute name="comment" type="String"/>
+    <aura:attribute name="usersComments" type="List"/>
+
+    <aura:handler name="change" value="{!v.productID}" action="{!c.onChange}"/>
+
+    <c:SH_Spinner aura:id="spinner"/>
+
+    <div class="slds-m-bottom--small">
+        <lightning:inputRichText value="{!v.comment}" placeholder="Type something interesting"/>
+        <lightning:button disabled="{! empty(v.comment)}" class="comment-btn" name="comment" label="Send" onclick="{!c.sendComment}"/>
+    </div>
+
+    <aura:if isTrue="{!v.isCommentsExist}">
+        <div >
+            <aura:iteration items="{!v.usersComments}" var="comm" indexVar="i">
+                <div class="{!equals(mod(i, 2), 0) ? 'slds-feed__item-comments b-white' : 'slds-feed__item-comments'}">
+                    <ul>
+                        <li>
+                            <article class="slds-comment comment slds-media slds-hint-parent">
+                                <div class="slds-media__figure">
+                                    <lightning:icon iconName="standard:avatar"/>
+                                </div>
+                                <div class="slds-media__body">
+                                    <header class="slds-media slds-media_center">
+                                        <div class="slds-grid slds-grid_align-spread slds-has-flexi-truncate">
+                                            <p class="slds-truncate" title="{!comm.UserName__c}">{!comm.UserName__c}</p><!--  + ' - ' + comm.CurrentDate__c -->
+                                        </div>
+                                    </header>
+
+                                    <div class="slds-comment__content slds-text-longform">
+                                        <lightning:formattedRichText value="{!comm.Comment__c}"/>
+                                    </div>
+                                </div>
+                            </article>
+                        </li>
+                    </ul>
+                </div>
+            </aura:iteration>
+        </div>
+    </aura:if>
+</aura:component>

@@ -19,13 +19,13 @@
             </div>
 
             <div class="slds-col slds-size_3-of-4 slds-p-left--small relative">
-                <p class="slds-text-heading--label" style="font-size: 1.33rem; max-height: 3.1rem; overflow: hidden;">Title: {!v.simpleRecord.Name}</p>
+                <p class="slds-text-heading--label" style="font-size: 1.33rem; max-height: 3.1rem; overflow: hidden;">{!v.simpleRecord.Name}</p>
 
                 <p class="slds-text-heading--label price">{!v.product.price} $</p>
 
                 <div class="slds-text-heading--label bottom">
                     <aura:if isTrue="{!v.product.rate ge 10}">
-                        <div title="{!v.product.rate / 10 + ' / 10'}" style="margin-bottom: -1.25rem;">
+                        <div title="{!v.product.rate / 20 + ' / 5'}" style="margin-bottom: -1.25rem;">
                             <div id="r10" class="{!v.product.rate ge 10 ? 'left-part star-point' : 'left-part'}"></div>
                             <div id="r20" class="{!v.product.rate ge 20 ? 'right-part star-point' : 'right-part'}"></div>
                             <div id="r30" class="{!v.product.rate ge 30 ? 'left-part star-point' : 'left-part'}"></div>
