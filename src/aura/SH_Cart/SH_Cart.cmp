@@ -1,0 +1,62 @@
+<aura:component description="SH_Cart" controller="SH_CartController">
+    <aura:attribute name="isCartListDisplay" type="Boolean" default="false"/>
+    <aura:attribute name="products" type="List"/>
+    <aura:attribute name="price" type="Decimal" default="0"/>
+
+    <aura:method name="addProductToCart" action="{!c.onAddProductToCart}" access="public">
+        <aura:attribute name="productID" type="String"/>
+        <aura:attribute name="productType" type="String"/>
+        <aura:attribute name="productPrice" type="String"/>
+        <aura:attribute name="productImgUrl" type="String"/>
+    </aura:method>
+
+    <c:SH_Spinner aura:id="spinner"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+
+    <div class="cart-header">
+        Cost: <lightning:formattedNumber value="{!v.price}" maximumFractionDigits="2"/>$
+
+        <a id="show-cart" class="show-cart" onclick="{!c.showItems}">
+            <lightning:icon iconName="custom:custom93" title="{!$Label.c.Show_items}"/>
+        </a>
+
+        <aura:if isTrue="{!v.isCartListDisplay}">
+            <div >
+                <aura:iteration items="{!v.products}" var="product">
+                    <div class="cart-item slds-p-top--small slds-m-top--medium" style="border-top: 1px solid rgb(212, 212, 212);">
+                        <div class="cart-item-s">
+                            <div class="product-photo slds-m-right--small" style="{!'background-image: url(' + product.Photo_Url__c + ')'}"></div>
+
+                            <div class="product-info">
+                                {!product.Product2.Name}<br/>
+                                {!product.Product_Type__c}
+                            </div>
+
+                            <div class="product-price">
+                                {!product.UnitPrice} $ {!product.Quantity gt 1 ? (' ✕ ' + product.Quantity) : ''}
+                            </div>
+
+                            <a data-id="{!product.Product2Id}" data-type="{!product.Product_Type__c}" onclick="{!c.addMoreItems}" class="add-item">
+                                <lightning:icon iconName="utility:new"/>
+                            </a>
+
+                            <a data-id="{!product.Product2Id}" data-type="{!product.Product_Type__c}" onclick="{!c.lessItems}" class="pop-item">
+                                <lightning:icon iconName="utility:ban"/>
+                            </a>
+                            <!--<lightning:icon iconName="utility:delete" class="drop-item"/>-->
+                        </div>
+                    </div>
+                </aura:iteration>
+            </div>
+
+            <div class="cart-item slds-p-top--small slds-m-top--medium" style="border-top: 1px solid rgb(212, 212, 212);">
+                Cost: <lightning:formattedNumber value="{!v.price}" maximumFractionDigits="2"/>$
+            </div>
+        </aura:if>
+
+        <lightning:button class="buy-btn slds-m-top--small" onclick="{!c.goToOrder}">
+            Buy
+        </lightning:button>
+    </div>
+</aura:component>
