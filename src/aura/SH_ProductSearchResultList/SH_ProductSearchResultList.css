@@ -119,3 +119,8 @@
 .THIS .slds-icon.slds-icon-text-default {
     width: 1.25rem !important;
 }
+
+.THIS .btn-add.slds-button[disabled],
+.THIS .btn-add.slds-button:disabled {
+    background-color: rgba(167, 0, 3, .25) !important;
+}

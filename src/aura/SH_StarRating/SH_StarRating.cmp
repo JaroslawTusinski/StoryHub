@@ -50,7 +50,9 @@
 
     <div class="slds-p-bottom--medium">
         <div class="{!'c100 big p' + v.averageRating}">
-            <span>{!v.averageRating / 20}</span>
+            <span>
+                <lightning:formattedNumber value="{!v.averageRating / 20}" maximumFractionDigits="2"/>
+            </span>
             <div class="slice">
                 <div class="bar"></div>
                 <div class="fill"></div>
@@ -59,7 +61,7 @@
 
         <div style="margin-top: 1.75em;">
             Your vote:&nbsp;&nbsp;{!v.rate / 20} <br/>
-            Average Rate:&nbsp;&nbsp;{!v.averageRating / 20} <br/>
+            Average Rate:&nbsp;&nbsp;<lightning:formattedNumber value="{!v.averageRating / 20}" maximumFractionDigits="2"/> <br/>
             Number  of votes:&nbsp;&nbsp;{!v.usersNumber}
         </div>
     </div>

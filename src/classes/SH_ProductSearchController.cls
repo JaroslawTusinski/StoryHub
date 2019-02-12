@@ -1,10 +1,16 @@
-public with sharing class SH_ProductSearchController {
+public without sharing class SH_ProductSearchController {
     @AuraEnabled
     public static String searchForProducts(String jsonCredentialsObject) {
         List<String> ids = new List<String>();
         List<Decimal> rates = new List<Decimal>();
         List<List<String>> urls = new List<List<String>>();
         List<Product2> results = prepareProductList(jsonCredentialsObject);
+        List<ContentDocumentLink> documentLinks;
+        List<String> linksIDs;
+        List<ContentVersion> contentVersions;
+        List<String> contentIDs;
+        List<String> url;
+        List<ContentDistribution> publicUrl;
 
         if (results.isEmpty()) return null;
 
@@ -17,37 +23,46 @@ public with sharing class SH_ProductSearchController {
         }
 
         queryBuilder.addSelect('UnitPrice')
-                    .addFrom('PricebookEntry')
-                    .addWhere('Product2Id')
-                    .startINBlock();
+                .addSelect('Product2Id')
+                .addFrom('PricebookEntry')
+                .addWhere('Product2Id')
+                .startINBlock();
 
         for (String ind : ids) {
-            List<String> url = new List<String>();
-            List<ContentDocumentLink> imgs = [SELECT ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId = :ind];
+            url = new List<String>();
+            linksIDs = new List<String>();
+            contentIDs = new List<String>();
+            documentLinks = [SELECT ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId = :ind];
 
-            rates.add((Decimal)([SELECT AVG(Rating__c) averageRating FROM MovieOpinion__c WHERE MovieID__c LIKE :ind].get(0).get('averageRating')));
-
-            if (!imgs.isEmpty()) {
-                for(ContentDocumentLink img : imgs){
-                    List<ContentDistribution> publicUrl = [SELECT ContentDownloadUrl FROM ContentDistribution WHERE ContentDocumentId = :(img.ContentDocumentId)];
-
-                    if (!publicUrl.isEmpty()) {
-                        url.add(publicUrl.get(0).ContentDownloadUrl);
-                    }
-                }
+            for (ContentDocumentLink linksID : documentLinks) {
+                linksIDs.add(linksID.ContentDocumentId);
             }
 
+            contentVersions = [SELECT Id FROM ContentVersion WHERE ContentDocumentId IN :linksIDs AND FileType IN ('JPG', 'JPEG', 'PNG')];
+
+            for (ContentVersion contentID : contentVersions) {
+                contentIDs.add(contentID.Id);
+            }
+
+            rates.add((Decimal) ([SELECT AVG(Rating__c) averageRating FROM MovieOpinion__c WHERE MovieID__c LIKE :ind].get(0).get('averageRating')));
+
+            publicUrl = [SELECT ContentDownloadUrl FROM ContentDistribution WHERE ContentVersionId = :contentIDs];
+
+            for (ContentDistribution imgURL : publicUrl) {
+                if (!publicUrl.isEmpty()) url.add(imgURL.ContentDownloadUrl);
+                else url.add(null);
+            }
             queryBuilder.addWhere('\'' + ind + '\',');
             urls.add(url);
         }
 
         queryBuilder.addWhere('\'' + ids[0] + '\'')
-                    .closeBlock();
+                .closeBlock();
 
         List<PricebookEntry> prices = Database.query(queryBuilder.buildQuery());
 
         for (Integer i = 0; i < ids.size(); i++) {
-            products.add(new Products(ids[i], rates[i], results[i], prices[i].UnitPrice, urls[i]));
+            products.add(new Products(ids[i], rates[i], results[i], prices, urls[i]));
         }
 
         return JSON.serialize(products);
@@ -75,8 +90,7 @@ public with sharing class SH_ProductSearchController {
             query.startANDBlock()
                     .addWhere('RecordType.Name LIKE \'Book\'').addOR()
                     .addWhere('RecordType.Name LIKE \'Movie\'').closeBlock();
-        }
-        else {
+        } else {
             String productType = 'Book';
             if (credentialsObject.searchMovie) productType = 'Movie';
 
@@ -98,7 +112,7 @@ public with sharing class SH_ProductSearchController {
             query.addAND()
                     .addWhere('Id')
                     .startINBlock()
-                        .addWhere('SELECT Product2Id FROM PricebookEntry WHERE');
+                    .addWhere('SELECT Product2Id FROM PricebookEntry WHERE');
 
             if (credentialsObject.searchMinPrice >= 0) {
                 query.addWhere('UnitPrice >= ' + credentialsObject.searchMinPrice);
@@ -132,16 +146,38 @@ public with sharing class SH_ProductSearchController {
     public class Products {
         public String ind;
         public Decimal rate;
+        public Decimal price = 0;
+        public Decimal salePrice;
         public Product2 product;
-        public Decimal price;
         public List<String> imgUrls;
 
-        public Products(String ind, Decimal rate, Product2 product, Decimal price, List<String> imgUrls){
+        public Products(String ind, Decimal rate, Product2 product, List<PricebookEntry> prices, List<String> imgUrls) {
             this.ind = ind;
             this.rate = rate;
             this.product = product;
-            this.price = price;
             this.imgUrls = imgUrls;
+
+            selectPrice(prices);
+        }
+
+        private void selectPrice(List<PricebookEntry> prices) {
+            for (PricebookEntry price : prices) {
+                if (price.Product2Id == this.ind) {
+                    if (price.UnitPrice > this.price) {
+                        this.price = price.UnitPrice;
+
+                        if (this.salePrice == null) this.salePrice = price.UnitPrice;
+                    } else if (this.salePrice != null && price.UnitPrice < this.salePrice) {
+                        this.salePrice = price.UnitPrice;
+                    }
+
+                    System.debug(this.ind + ' - ' + this.price);
+                }
+            }
+
+            if (this.price == this.salePrice) {
+                this.salePrice = null;
+            }
         }
     }
 
@@ -152,7 +188,7 @@ public with sharing class SH_ProductSearchController {
         public List<String> allMovieType;
         public List<String> allConditions;
 
-        public AllPickListsValueObject(List<String> allBookGenre, List<String> allMovieGenre, List<String> allBookType, List<String> allMovieType, List<String> allConditions){
+        public AllPickListsValueObject(List<String> allBookGenre, List<String> allMovieGenre, List<String> allBookType, List<String> allMovieType, List<String> allConditions) {
             this.allBookGenre = allBookGenre;
             this.allMovieGenre = allMovieGenre;
             this.allBookType = allBookType;

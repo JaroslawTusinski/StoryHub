@@ -22,4 +22,8 @@
     backToResults : function(component, event, helper) {
         helper.doSelectProduct(component, event, false);
     },
+
+    addToCart : function(component, event, helper) {
+        helper.doAddToCart(component, event);
+    },
 })

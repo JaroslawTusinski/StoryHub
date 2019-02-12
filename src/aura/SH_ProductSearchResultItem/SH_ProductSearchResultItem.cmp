@@ -14,14 +14,29 @@
 
     <div class="slds-page-header page-header-hover slds-m-bottom--small" role="banner">
         <div class="slds-grid slds-wrap">
-            <div class="slds-col slds-size_1-of-4">
+            <div class="slds-col slds-size_1-of-4" style="position: relative;">
                 <div style="{!'width: 100%; height: 11rem; background-image: url(' + v.product.imgUrls[0] +');'}" class="background"></div>
+
+                <aura:if isTrue="{!empty(v.product.salePrice)}">
+                    <aura:set attribute="else">
+                        <div class="sale">{!$Label.c.Sale}</div>
+                    </aura:set>
+                </aura:if>
             </div>
 
             <div class="slds-col slds-size_3-of-4 slds-p-left--small relative">
                 <p class="slds-text-heading--label" style="font-size: 1.33rem; max-height: 3.1rem; overflow: hidden;">{!v.simpleRecord.Name}</p>
 
-                <p class="slds-text-heading--label price">{!v.product.price} $</p>
+                <p class="slds-text-heading--label price">
+                    <aura:if isTrue="{!empty(v.product.salePrice)}">
+                        {!v.product.price} $
+
+                        <aura:set attribute="else">
+                            <span style="text-decoration: line-through rgba(167, 0, 3, 1);">{!v.product.price} $</span>&nbsp;&nbsp;
+                            <span style="font-size: 90%; color: rgba(167, 0, 3, 1);">{!v.product.salePrice} $</span>
+                        </aura:set>
+                    </aura:if>
+                </p>
 
                 <div class="slds-text-heading--label bottom">
                     <aura:if isTrue="{!v.product.rate ge 10}">
@@ -40,6 +55,14 @@
                     </aura:if>
                     {!$Label.c.Product_condition}:&nbsp;&nbsp;{!v.product.product.Family}
                 </div>
+
+                <aura:if isTrue="{!empty(v.product.salePrice)}">
+                    <aura:set attribute="else">
+                        <div class="sale-circle">
+                            <lightning:formattedNumber value="{!(v.product.price - v.product.salePrice) / v.product.price * 100}" maximumFractionDigits="2"/>%
+                        </div>
+                    </aura:set>
+                </aura:if>
             </div>
         </div>
     </div>
