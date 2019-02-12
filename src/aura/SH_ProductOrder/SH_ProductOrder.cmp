@@ -1,0 +1,71 @@
+<aura:component description="SH_ProductOrder" controller="SH_ProductOrderController" implements="forceCommunity:availableForAllPageTypes" access="global">
+    <aura:attribute name="shippingCountry" type="String"/>
+    <aura:attribute name="shippingStreet" type="String"/>
+    <aura:attribute name="shippingState" type="String"/>
+    <aura:attribute name="shippingCode" type="String"/>
+    <aura:attribute name="shippingCity" type="String"/>
+    <aura:attribute name="formIsNotValid" type="Boolean" default="true"/>
+
+    <form class="slds-page-header slds-m-bottom--small" role="banner">
+        <div class="deliveryInfoContainer">
+            <div class="shippingAddressContainer">
+                <fieldset class="slds-form-element slds-form-element_compound slds-form-element_address">
+                    <div class="slds-form-element__control">
+                        <div class="slds-form-element__row">
+                            <div class="slds-size_1-of-2">
+                                <div class="slds-form-element">
+                                    <div class="slds-form-element__control slds-m-top--x-small">
+                                        <lightning:input label="Shipping Country" required="true" type="text" onchange="{!c.checkInputsValid}" value="{!v.shippingCountry}"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="slds-size_1-of-2">
+                                <div class="slds-form-element">
+                                    <div class="slds-form-element__control slds-m-top--x-small">
+                                        <lightning:input label="Shipping Street" required="true" type="text" onchange="{!c.checkInputsValid}" value="{!v.shippingStreet}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="slds-form-element__row">
+                            <div class="slds-size_1-of-2">
+                                <div class="slds-form-element">
+                                    <div class="slds-form-element__control slds-m-top--x-small">
+                                        <lightning:input label="Shipping State/Province" required="true" type="text" onchange="{!c.checkInputsValid}" value="{!v.shippingState}"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="slds-size_1-of-2">
+                                <div class="slds-form-element">
+                                    <div class="slds-form-element__control slds-m-top--x-small">
+                                        <lightning:input label="Shipping Zip/Postal Code" required="true" type="text" onchange="{!c.checkInputsValid}" value="{!v.shippingCode}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="slds-form-element__row">
+                            <div class="slds-size_1-of-2">
+                                <div class="slds-form-element">
+                                    <div class="slds-form-element__control slds-m-top--x-small">
+                                        <lightning:input label="Shipping City" required="true" type="text" onchange="{!c.checkInputsValid}" value="{!v.shippingCity}"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="slds-size_1-of-2">
+                                <div class="slds-float_right slds-m-right--x-small slds-m-top--x-small">
+                                    <lightning:button label="Back to home page" onclick="{!c.backToHome}"/>
+                                    <lightning:button label="Confirm" disabled="{!v.formIsNotValid}" onclick="{!c.confirmOrder}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </form>
+</aura:component>
