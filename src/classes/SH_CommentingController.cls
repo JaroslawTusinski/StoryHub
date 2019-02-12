@@ -12,7 +12,7 @@ public with sharing class SH_CommentingController {
             insert comment;
         }
 
-        return [SELECT Comment__c, CurrentDate__c, UserName__c FROM MovieComment__c WHERE MovieId__c LIKE :productID ORDER BY CurrentDate__c];
+        return getComment(productID);
     }
 
     @AuraEnabled

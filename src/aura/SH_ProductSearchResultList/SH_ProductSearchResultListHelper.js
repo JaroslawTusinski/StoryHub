@@ -29,4 +29,17 @@
 
         return productList;
     },
+
+    doAddToCart : function(component, event) {
+        let productID = (component.get('v.product')).ind;
+        let productType = component.get('v.selectedProductType');
+        let productPrice = component.get('v.product').salePrice || component.get('v.product').price;
+        let productImgUrl = component.get('v.product').imgUrls[0];
+
+        const cartComponent = component.find('cart');
+
+        if (cartComponent) {
+            cartComponent.addProductToCart(productID, productType, productPrice, productImgUrl);
+        }
+    },
 })

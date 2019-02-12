@@ -27,6 +27,7 @@
     -moz-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
     box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
     border: none;
+    overflow: hidden;
 }
 
 .THIS.page-header-hover:hover {
@@ -79,4 +80,36 @@
 
 .THIS .star-point {
     background-color: gold;
+}
+
+
+
+.THIS .sale {
+    background-color: rgba(167, 0, 3, 1);
+    position: absolute;
+    font-size: 1.5rem;
+    line-height: 4rem;
+    color: white;
+    width: calc(100% + 5vh + 5vw);
+    text-align: center;
+    transform: rotate(-45deg);
+    top: 0;
+    right: 0;
+}
+
+.THIS .sale-circle {
+    background-color: rgba(167, 0, 3, 1);
+    position: absolute;
+    font-size: 1rem;
+    line-height: 4rem;
+    color: white;
+    width: 4rem;
+    height: 4rem;
+    text-align: center;
+    transform: rotate(25deg);
+    bottom: 0;
+    right: 0;
+    border-radius: 50%;
+    display: table-cell;
+    vertical-align: middle;
 }

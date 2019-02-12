@@ -5,7 +5,7 @@
 
     <aura:attribute name="isProductSelected" type="Boolean" default="false"/>
     <aura:attribute name="product" type="Object"/>
-    <aura:attribute name="selectedProductType" type="String"/>
+    <aura:attribute name="selectedProductType" type="String" default=""/>
 
     <ltng:require styles="{!$Resource.SH_StyleCommunity}"/>
 
@@ -49,12 +49,19 @@
                                         </aura:if>
 
                                         <span class="price">
-                                            {!v.product.price} $
+                                            <aura:if isTrue="{!empty(v.product.salePrice)}">
+                                                {!v.product.price} $
+
+                                                <aura:set attribute="else">
+                                                    <span style="text-decoration: line-through rgba(167, 0, 3, 1);">{!v.product.price} $</span>&nbsp;&nbsp;
+                                                    <span style="font-size: 90%; color: rgba(167, 0, 3, 1);">{!v.product.salePrice} $</span>
+                                                </aura:set>
+                                            </aura:if>
                                         </span>
 
                                         <lightning:combobox label="{!equals(v.product.product.RecordType.Name, 'Book') ? $Label.c.Book_Type : $Label.c.Movie_Type}" options="{!v.productType}" value="{!v.selectedProductType}"/>
 
-                                        <lightning:button label="{!$Label.c.Add_to_cart}" onclick="" class="btn-add"/>
+                                        <lightning:button label="{!$Label.c.Add_to_cart}" onclick="{!c.addToCart}" class="btn-add" disabled="{!equals(v.selectedProductType, '')}"/>
                                     </div>
                                 </div>
                             </aura:if>
@@ -79,13 +86,20 @@
                                 <div class="slds-col slds-size_1-of-2 slds-p-left--small">
                                     <div class="slds-text-heading--label">
                                         <span class="price">
-                                            {!v.product.price} $
+                                            <aura:if isTrue="{!empty(v.product.salePrice)}">
+                                                {!v.product.price} $
+
+                                                <aura:set attribute="else">
+                                                    <span style="text-decoration: line-through rgba(167, 0, 3, 1);">{!v.product.price} $</span>&nbsp;&nbsp;
+                                                    <span style="font-size: 90%; color: rgba(167, 0, 3, 1);">{!v.product.salePrice} $</span>
+                                                </aura:set>
+                                            </aura:if>
                                         </span>
 
                                         <lightning:combobox label="{!equals(v.product.product.RecordType.Name, 'Book') ? $Label.c.Book_Type : $Label.c.Movie_Type}" options="{!v.productType}" value="{!v.selectedProductType}"/>
                                     </div>
 
-                                    <lightning:button label="{!$Label.c.Add_to_cart}" onclick="" class="btn-add-no-photo slds-m-top--medium slds-m-bottom--x-large"/>
+                                    <lightning:button label="{!$Label.c.Add_to_cart}" onclick="{!c.addToCart}" class="btn-add-no-photo slds-m-top--medium slds-m-bottom--x-large" disabled="{!equals(v.selectedProductType, '')}"/>
                                 </div>
                             </aura:if>
                         </div>
@@ -124,6 +138,10 @@
 
                 <div class="slds-page-header slds-m-vertical--small" role="banner">
                     <c:SH_StarRating productID="{!v.product.ind}"/>
+                </div>
+
+                <div class="slds-page-header slds-m-vertical--small" role="banner">
+                    <c:SH_Cart aura:id="cart"/>
                 </div>
 
                 <div class="slds-page-header slds-m-vertical--small" role="banner">
